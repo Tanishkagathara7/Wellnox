@@ -1,0 +1,161 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\Product;
+use App\Models\ProductCategory;
+use App\Http\Requests\Admin\StoreProductRequest;
+use App\Http\Requests\Admin\UpdateProductRequest;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+
+class ProductController extends Controller
+{
+    /**
+     * Display a listing of products with search and category filtering.
+     */
+    public function index(Request $request)
+    {
+        $query = Product::with('category');
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('short_description', 'like', "%{$search}%")
+                  ->orWhere('slug', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->input('category_id'));
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', (bool) $request->input('status'));
+        }
+
+        $products = $query->orderBy('sort_order', 'asc')
+            ->orderBy('id', 'desc')
+            ->paginate(10)
+            ->withQueryString();
+
+        $categories = ProductCategory::orderBy('name')->get();
+
+        return view('admin.products.index', compact('products', 'categories'));
+    }
+
+    /**
+     * Show form for creating a new product.
+     */
+    public function create()
+    {
+        $categories = ProductCategory::orderBy('name')->get();
+        return view('admin.products.create', compact('categories'));
+    }
+
+    /**
+     * Store a newly created product.
+     */
+    public function store(StoreProductRequest $request)
+    {
+        $validated = $request->validated();
+
+        if (empty($validated['slug'])) {
+            $baseSlug = Str::slug($validated['name']);
+            $slug = $baseSlug;
+            $c = 1;
+            while (Product::where('slug', $slug)->exists()) {
+                $slug = $baseSlug . '-' . $c++;
+            }
+            $validated['slug'] = $slug;
+        }
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('products', 'public');
+            $validated['image'] = $path;
+        }
+
+        Product::create($validated);
+
+        return redirect()->route('admin.products.index')
+            ->with('success', 'Product created successfully.');
+    }
+
+    /**
+     * Display the specified product.
+     */
+    public function show(Product $product)
+    {
+        $product->load('category');
+        return view('admin.products.show', compact('product'));
+    }
+
+    /**
+     * Show form for editing an existing product.
+     */
+    public function edit(Product $product)
+    {
+        $categories = ProductCategory::orderBy('name')->get();
+        return view('admin.products.edit', compact('product', 'categories'));
+    }
+
+    /**
+     * Update the specified product.
+     */
+    public function update(UpdateProductRequest $request, Product $product)
+    {
+        $validated = $request->validated();
+
+        if (empty($validated['slug'])) {
+            $baseSlug = Str::slug($validated['name']);
+            $slug = $baseSlug;
+            $c = 1;
+            while (Product::where('slug', $slug)->where('id', '!=', $product->id)->exists()) {
+                $slug = $baseSlug . '-' . $c++;
+            }
+            $validated['slug'] = $slug;
+        }
+
+        if ($request->hasFile('image')) {
+            // Delete old file from storage if exists
+            if ($product->image && Storage::disk('public')->exists($product->image)) {
+                Storage::disk('public')->delete($product->image);
+            }
+            $path = $request->file('image')->store('products', 'public');
+            $validated['image'] = $path;
+        }
+
+        $product->update($validated);
+
+        return redirect()->route('admin.products.index')
+            ->with('success', 'Product updated successfully.');
+    }
+
+    /**
+     * Remove the specified product from storage.
+     */
+    public function destroy(Product $product)
+    {
+        if ($product->image && Storage::disk('public')->exists($product->image)) {
+            Storage::disk('public')->delete($product->image);
+        }
+
+        $product->delete();
+
+        return redirect()->route('admin.products.index')
+            ->with('success', 'Product deleted successfully.');
+    }
+
+    /**
+     * Toggle product active status.
+     */
+    public function toggleStatus(Product $product)
+    {
+        $product->update(['status' => !$product->status]);
+
+        return back()->with('success', 'Product status updated to ' . ($product->status ? 'Active' : 'Inactive') . '.');
+    }
+}

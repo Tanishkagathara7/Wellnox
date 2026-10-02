@@ -1,0 +1,420 @@
+/* ==========================================================================
+   DEDICATED CONTACT US PAGE STYLES (PREMIUM CORPORATE & ARCHITECTURAL)
+   Colors: #111111 (Dark), #080808 (Deep Black), #F7F3ED (Warm Cream),
+   #C98A4A (Bronze), #D9A066 (Light Bronze), #FFFFFF (White), #777777 (Muted)
+   ========================================================================== */
+
+.contact-page-section {
+    background-color: #F7F3ED;
+    background: linear-gradient(180deg, #FBF8F4 0%, #F4EFE6 100%);
+    position: relative;
+    color: #111111;
+}
+
+.contact-bg-ambient-grid {
+    position: absolute;
+    inset: 0;
+    background-size: 45px 45px;
+    background-image: 
+        linear-gradient(to right, rgba(201, 138, 74, 0.045) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(201, 138, 74, 0.045) 1px, transparent 1px);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.contact-bg-glow-1 {
+    position: absolute;
+    top: 5%;
+    left: -100px;
+    width: 550px;
+    height: 550px;
+    background: radial-gradient(circle, rgba(201, 138, 74, 0.09) 0%, transparent 70%);
+    filter: blur(120px);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.contact-bg-glow-2 {
+    position: absolute;
+    bottom: 5%;
+    right: -100px;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(217, 160, 102, 0.08) 0%, transparent 70%);
+    filter: blur(130px);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Contact Info Left Column Cards */
+.contact-info-card {
+    background: #FFFFFF;
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    border-radius: 16px;
+    padding: 16px 20px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+    text-decoration: none;
+    display: flex;
+}
+
+.contact-info-card:hover {
+    transform: translateX(4px);
+    border-color: rgba(201, 138, 74, 0.5);
+    box-shadow: 0 10px 28px rgba(201, 138, 74, 0.12);
+}
+
+.contact-icon-orb {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: #FAF7F2;
+    border: 1.5px solid rgba(201, 138, 74, 0.3);
+    color: #C98A4A;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+.contact-info-card:hover .contact-icon-orb {
+    background: linear-gradient(135deg, #C98A4A 0%, #A4632E 100%);
+    color: #FFFFFF;
+    border-color: #C98A4A;
+    box-shadow: 0 4px 14px rgba(201, 138, 74, 0.35);
+}
+
+.contact-tile-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: #C98A4A;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+}
+
+.contact-tile-val {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: #111111;
+    line-height: 1.45;
+}
+
+/* Subtle Architectural In-Situ Visual Preview Pill */
+.contact-architectural-preview {
+    background: #FFFFFF;
+    border: 1px solid rgba(201, 138, 74, 0.3);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.05);
+}
+
+.contact-arch-img-frame {
+    position: relative;
+    max-height: 175px;
+    overflow: hidden;
+}
+
+.contact-arch-img {
+    width: 100%;
+    height: 175px;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.contact-architectural-preview:hover .contact-arch-img {
+    transform: scale(1.04);
+}
+
+.contact-arch-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(12, 13, 16, 0.65) 100%);
+}
+
+.contact-arch-caption {
+    position: absolute;
+    bottom: 12px;
+    left: 14px;
+    right: 14px;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.contact-arch-tag {
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    color: #F7F3ED;
+    font-family: var(--font-mono, monospace);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+/* Right Column Contact Form Card */
+.contact-form-surface {
+    background: #FFFFFF;
+    border: 1px solid rgba(201, 138, 74, 0.38);
+    border-radius: 24px;
+    padding: 40px 36px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.06), 0 0 30px rgba(201, 138, 74, 0.06);
+    position: relative;
+    overflow: hidden;
+}
+
+.contact-form-surface::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3.5px;
+    background: linear-gradient(90deg, #C98A4A 0%, #E6BE8A 50%, #C98A4A 100%);
+}
+
+.contact-form-title {
+    font-family: var(--font-heading);
+    font-size: clamp(22px, 2.2vw, 26px);
+    font-weight: 600;
+    color: #111111;
+}
+
+/* Form Inputs with Bronze Focus States */
+.contact-field-group {
+    position: relative;
+}
+
+.contact-input-label {
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: #2b2d33;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+}
+
+.contact-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.contact-input-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: #9C714D;
+    pointer-events: none;
+    transition: transform 0.25s ease, color 0.25s ease;
+    z-index: 3;
+}
+
+.contact-input-wrap:focus-within .contact-input-icon {
+    color: #C98A4A;
+    transform: translateY(-50%) scale(1.12);
+}
+
+.contact-text-input {
+    background: #FAF7F2 !important;
+    border: 1.5px solid #E5DFD5 !important;
+    color: #111111 !important;
+    border-radius: 12px !important;
+    padding: 13px 16px 13px 46px !important;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+    transition: all 0.25s ease !important;
+    width: 100%;
+}
+
+.contact-text-input::placeholder {
+    color: #9E9B94 !important;
+    font-size: 13.5px;
+}
+
+.contact-text-input:focus {
+    background: #FFFFFF !important;
+    border-color: #C98A4A !important;
+    box-shadow: 0 0 0 3.5px rgba(201, 138, 74, 0.16) !important;
+    color: #111111 !important;
+    outline: none;
+}
+
+.contact-textarea {
+    padding-left: 16px !important;
+    resize: vertical;
+    min-height: 120px;
+}
+
+/* Success Alert Card */
+.contact-success-banner {
+    background: linear-gradient(135deg, #14171d 0%, #0d0e12 100%);
+    border: 1px solid rgba(201, 138, 74, 0.45);
+    border-radius: 16px;
+    padding: 18px 22px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+}
+
+.contact-success-icon {
+    font-size: 28px;
+    color: #2ECC71;
+    line-height: 1;
+}
+
+/* Minimal Trust Strip Under Main Section */
+.contact-trust-strip {
+    background-color: #0E0F13;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    position: relative;
+    padding: 55px 0;
+}
+
+.contact-trust-card {
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 16px;
+    padding: 24px 20px;
+    transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+    height: 100%;
+}
+
+.contact-trust-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(201, 138, 74, 0.4);
+    background: rgba(201, 138, 74, 0.06);
+}
+
+.contact-trust-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: rgba(201, 138, 74, 0.12);
+    border: 1px solid rgba(201, 138, 74, 0.3);
+    color: #D9A066;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.contact-trust-title {
+    font-family: var(--font-heading);
+    font-size: 16px;
+    font-weight: 600;
+    color: #FFFFFF;
+    margin-bottom: 6px;
+}
+
+.contact-trust-desc {
+    font-size: 12.5px;
+    color: rgba(247, 243, 237, 0.6);
+    line-height: 1.55;
+    margin-bottom: 0;
+}
+
+/* Responsive Overrides */
+@media (max-width: 991.98px) {
+    .contact-form-surface {
+        padding: 32px 24px;
+        margin-top: 20px;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .contact-form-surface {
+        padding: 24px 18px;
+        border-radius: 18px;
+    }
+
+    .contact-info-card {
+        padding: 14px 16px;
+    }
+
+    .contact-icon-orb {
+        width: 40px;
+        height: 40px;
+        font-size: 17px;
+    }
+
+    .contact-tile-val {
+        font-size: 13.5px;
+    }
+
+    .contact-trust-strip {
+        padding: 40px 0;
+    }
+}
+
+/* Google Maps Edge-to-Edge Full-Width Section */
+.contact-map-fullwidth-section {
+    position: relative;
+    width: 100%;
+    height: 480px;
+    background: #0C0D11;
+    border-top: 1px solid rgba(201, 138, 74, 0.35);
+    border-bottom: 1px solid rgba(201, 138, 74, 0.35);
+}
+
+.contact-map-full-embed iframe {
+    width: 100% !important;
+    height: 480px !important;
+    border: none;
+    display: block;
+    filter: contrast(1.02) saturate(1.05);
+}
+
+.map-floating-overlay-card {
+    position: absolute;
+    top: 36px;
+    left: 5%;
+    max-width: 360px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(201, 138, 74, 0.45);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    z-index: 10;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.18), 0 0 30px rgba(201, 138, 74, 0.1);
+}
+
+.map-card-icon-orb {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: #FAF7F2;
+    border: 1px solid rgba(201, 138, 74, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.map-overlay-title {
+    font-family: var(--font-heading);
+    font-size: 15.5px;
+    font-weight: 700;
+    color: #111111;
+}
+
+@media (max-width: 767.98px) {
+    .contact-map-fullwidth-section {
+        height: auto;
+    }
+
+    .contact-map-full-embed iframe {
+        height: 380px !important;
+    }
+
+    .map-floating-overlay-card {
+        position: static;
+        max-width: 100%;
+        margin: 16px;
+        border-radius: 16px;
+    }
+}

@@ -1,0 +1,67 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
+
+class ProductCategory extends Model
+{
+    use HasFactory;
+
+    protected $table = 'product_categories';
+
+    protected $fillable = [
+        'name',
+        'slug',
+        'description',
+        'image',
+        'status',
+        'sort_order',
+    ];
+
+    protected $casts = [
+        'status' => 'boolean',
+        'sort_order' => 'integer',
+    ];
+
+    /**
+     * Relationship: Category has many Products.
+     */
+    public function products(): HasMany
+    {
+        return $this->hasMany(Product::class, 'category_id');
+    }
+
+    /**
+     * Active categories scope.
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('status', true);
+    }
+
+    /**
+     * Sorted categories scope.
+     */
+    public function scopeSorted($query)
+    {
+        return $query->orderBy('sort_order', 'asc')->orderBy('id', 'asc');
+    }
+
+    /**
+     * Boot model events for automatic slug generation if not provided.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($category) {
+            if (empty($category->slug)) {
+                $category->slug = Str::slug($category->name);
+            }
+        });
+    }
+}
