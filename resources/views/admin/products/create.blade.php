@@ -20,7 +20,7 @@
 
                         <div class="row g-3 mb-3">
                             <!-- Product Name -->
-                            <div class="col-md-7">
+                            <div class="col-md-6">
                                 <label for="name" class="admin-form-label">Product Name <span class="text-danger">*</span></label>
                                 <input type="text" name="name" id="name" class="form-control admin-form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" placeholder="e.g. Linear Shower Channel Drainer 600mm" required>
                                 @error('name')
@@ -29,9 +29,9 @@
                             </div>
 
                             <!-- Category -->
-                            <div class="col-md-5">
+                            <div class="col-md-3">
                                 <label for="category_id" class="admin-form-label">Category <span class="text-danger">*</span></label>
-                                <select name="category_id" id="category_id" class="form-select admin-form-select @error('category_id') is-invalid @enderror" required>
+                                <select name="category_id" id="category_id" class="form-select admin-form-select @error('category_id') is-invalid @enderror" required onchange="filterSubcategories(this.value)">
                                     <option value="">-- Select Category --</option>
                                     @foreach($categories as $cat)
                                         <option value="{{ $cat->id }}" {{ old('category_id') == $cat->id ? 'selected' : '' }}>
@@ -40,6 +40,24 @@
                                     @endforeach
                                 </select>
                                 @error('category_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- Subcategory -->
+                            <div class="col-md-3">
+                                <label for="subcategory_id" class="admin-form-label">Subcategory</label>
+                                <select name="subcategory_id" id="subcategory_id" class="form-select admin-form-select @error('subcategory_id') is-invalid @enderror">
+                                    <option value="">-- Optional Subcategory --</option>
+                                    @foreach($categories as $cat)
+                                        @foreach($cat->subcategories as $sub)
+                                            <option value="{{ $sub->id }}" data-category-id="{{ $cat->id }}" {{ old('subcategory_id') == $sub->id ? 'selected' : '' }}>
+                                                {{ $sub->name }}
+                                            </option>
+                                        @endforeach
+                                    @endforeach
+                                </select>
+                                @error('subcategory_id')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -52,6 +70,27 @@
                             @error('slug')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
+                        </div>
+
+                        <!-- Size & Color Row -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label for="size" class="admin-form-label">Size / Dimension <span class="text-danger">*</span></label>
+                                <input type="text" name="size" id="size" class="form-control admin-form-control @error('size') is-invalid @enderror" value="{{ old('size') }}" placeholder="e.g. 600mm, 24 Inch, 150x150mm, 4 Steps, 250ml">
+                                <span class="text-muted small">Standard dimensions, capacity, or step count</span>
+                                @error('size')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="color" class="admin-form-label">Color / Finish <span class="text-muted small">(Optional - leave blank if not applicable)</span></label>
+                                <input type="text" name="color" id="color" class="form-control admin-form-control @error('color') is-invalid @enderror" value="{{ old('color') }}" placeholder="e.g. Rose Gold, Matte Black, Chrome Mirror, Gold">
+                                <span class="text-muted small">Optional color or PVD finish (some products have no color)</span>
+                                @error('color')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                         </div>
 
                         <!-- Short Description -->
@@ -125,3 +164,32 @@
     </div>
 
 @endsection
+
+@push('scripts')
+<script>
+    function filterSubcategories(categoryId) {
+        const subSelect = document.getElementById('subcategory_id');
+        const options = subSelect.querySelectorAll('option[data-category-id]');
+        
+        let hasVisible = false;
+        options.forEach(opt => {
+            if (!categoryId || opt.getAttribute('data-category-id') === categoryId) {
+                opt.style.display = '';
+                hasVisible = true;
+            } else {
+                opt.style.display = 'none';
+                if (opt.selected) {
+                    subSelect.value = '';
+                }
+            }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const catSelect = document.getElementById('category_id');
+        if (catSelect && catSelect.value) {
+            filterSubcategories(catSelect.value);
+        }
+    });
+</script>
+@endpush

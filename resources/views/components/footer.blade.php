@@ -74,13 +74,13 @@
                     <div class="footer-col-bar"></div>
                 </div>
                 <ul class="footer-nav-list">
-                    <li><a href="#popular-designs"><i class="bi bi-chevron-right footer-nav-bullet"></i> Shower Channel Drainers</a></li>
-                    <li><a href="#categories"><i class="bi bi-chevron-right footer-nav-bullet"></i> Floor Drains &amp; Gratings</a></li>
-                    <li><a href="#categories"><i class="bi bi-chevron-right footer-nav-bullet"></i> Bathroom Accessories</a></li>
-                    <li><a href="#categories"><i class="bi bi-chevron-right footer-nav-bullet"></i> Ceramic Dispensers &amp; Sets</a></li>
-                    <li><a href="#categories"><i class="bi bi-chevron-right footer-nav-bullet"></i> Modular Kitchen Racks</a></li>
-                    <li><a href="#categories"><i class="bi bi-chevron-right footer-nav-bullet"></i> Cloth Drying Stands</a></li>
-                    <li><a href="#categories"><i class="bi bi-chevron-right footer-nav-bullet"></i> Heavy Duty MS Ladders</a></li>
+                    <li><a href="{{ route('website.products', ['category' => 'bathroom-accessories']) }}"><i class="bi bi-chevron-right footer-nav-bullet"></i> Bathroom Accessories</a></li>
+                    <li><a href="{{ route('website.products', ['category' => 'ceramic-bathroom-accessories']) }}"><i class="bi bi-chevron-right footer-nav-bullet"></i> Ceramic Accessories</a></li>
+                    <li><a href="{{ route('website.products', ['category' => 'cloth-drying-stands']) }}"><i class="bi bi-chevron-right footer-nav-bullet"></i> Cloth Drying Stands</a></li>
+                    <li><a href="{{ route('website.products', ['category' => 'modular-kitchen-accessories']) }}"><i class="bi bi-chevron-right footer-nav-bullet"></i> Modular Kitchen Accessories</a></li>
+                    <li><a href="{{ route('website.products', ['category' => 'dish-drainers']) }}"><i class="bi bi-chevron-right footer-nav-bullet"></i> Dish Drainers</a></li>
+                    <li><a href="{{ route('website.products', ['category' => 'floor-drains-gratings']) }}"><i class="bi bi-chevron-right footer-nav-bullet"></i> Floor Drains &amp; Gratings</a></li>
+                    <li><a href="{{ route('website.products', ['category' => 'ms-ladders']) }}"><i class="bi bi-chevron-right footer-nav-bullet"></i> Heavy Duty MS Ladders</a></li>
                 </ul>
             </div>
 

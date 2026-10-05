@@ -64,6 +64,9 @@
                         <a href="{{ route('admin.categories.index') }}" class="admin-subnav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
                             <i class="bi bi-dash me-1"></i> Categories
                         </a>
+                        <a href="{{ route('admin.subcategories.index') }}" class="admin-subnav-link {{ request()->routeIs('admin.subcategories.*') ? 'active' : '' }}">
+                            <i class="bi bi-dash me-1"></i> Subcategories
+                        </a>
                     </div>
                 </div>
             </div>
@@ -139,6 +142,12 @@
                     <a href="{{ route('admin.categories.index') }}" class="admin-nav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
                         <i class="bi bi-tags-fill nav-icon"></i>
                         <span>Categories</span>
+                    </a>
+                </div>
+                <div class="admin-nav-item">
+                    <a href="{{ route('admin.subcategories.index') }}" class="admin-nav-link {{ request()->routeIs('admin.subcategories.*') ? 'active' : '' }}">
+                        <i class="bi bi-diagram-3-fill nav-icon"></i>
+                        <span>Subcategories</span>
                     </a>
                 </div>
                 <div class="admin-nav-item">

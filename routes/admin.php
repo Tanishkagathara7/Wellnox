@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductCategoryController;
+use App\Http\Controllers\Admin\ProductSubcategoryController;
 use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\ProfileController;
 
@@ -41,6 +42,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Product Categories Management
         Route::patch('/categories/{category}/toggle-status', [ProductCategoryController::class, 'toggleStatus'])->name('categories.toggle-status');
         Route::resource('categories', ProductCategoryController::class)->except(['show']);
+
+        // Product Subcategories Management
+        Route::patch('/subcategories/{subcategory}/toggle-status', [ProductSubcategoryController::class, 'toggleStatus'])->name('subcategories.toggle-status');
+        Route::resource('subcategories', ProductSubcategoryController::class)->except(['show']);
 
         // Products Management
         Route::patch('/products/{product}/toggle-status', [ProductController::class, 'toggleStatus'])->name('products.toggle-status');

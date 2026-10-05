@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Contact;
 use App\Models\Product;
 use App\Models\ProductCategory;
+use App\Models\ProductSubcategory;
 use App\Http\Requests\Website\StoreContactRequest;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
@@ -30,7 +32,7 @@ class HomeController extends Controller
                     'title'    => $cat->name,
                     'subtitle' => $cat->description ?: 'Premium Wellnox Architectural Series',
                     'image'    => $cat->image ?: 'assets/images/product/1.webp',
-                    'link'     => '#popular-designs',
+                    'link'     => route('website.products', ['category' => $cat->slug]),
                 ];
             })->toArray();
         } else {
@@ -1194,5 +1196,114 @@ class HomeController extends Controller
             'message' => 'Thank you for connecting! Your requirement has been emailed and our team will get in touch shortly.',
             'lead_id' => $contact->id,
         ]);
+    }
+
+    /**
+     * Display the rich, marvelous 7-Categories > Subcategories > Products showcase page.
+     */
+    public function products(Request $request)
+    {
+        $placeholders = config('placeholders', []);
+
+        // Load all 7 Categories with their active Subcategories and product counts
+        $categories = ProductCategory::active()
+            ->sorted()
+            ->with(['subcategories' => function ($q) {
+                $q->active()->sorted()->withCount(['products' => function ($pq) {
+                    $pq->active();
+                }]);
+            }])
+            ->withCount(['products' => function ($q) {
+                $q->active();
+            }])
+            ->get();
+
+        // Selected Category
+        $selectedCategorySlug = $request->query('category');
+        $selectedCategory = $selectedCategorySlug 
+            ? $categories->firstWhere('slug', $selectedCategorySlug) 
+            : $categories->first();
+
+        // If no category found with that slug, fallback to first
+        if (!$selectedCategory && $categories->isNotEmpty()) {
+            $selectedCategory = $categories->first();
+        }
+
+        // Selected Subcategory
+        $selectedSubcategorySlug = $request->query('subcategory');
+        $selectedSubcategory = null;
+        if ($selectedCategory && $selectedSubcategorySlug) {
+            $selectedSubcategory = $selectedCategory->subcategories->firstWhere('slug', $selectedSubcategorySlug);
+        }
+
+        // Build product query
+        $productsQuery = Product::with(['category', 'subcategory'])->active()->sorted();
+
+        if ($selectedCategory) {
+            $productsQuery->where('category_id', $selectedCategory->id);
+        }
+
+        if ($selectedSubcategory) {
+            $productsQuery->where('subcategory_id', $selectedSubcategory->id);
+        }
+
+        if ($request->filled('color')) {
+            $colorFilter = $request->query('color');
+            if ($colorFilter === 'has_color') {
+                $productsQuery->whereNotNull('color')->where('color', '!=', '');
+            } elseif ($colorFilter === 'no_color') {
+                $productsQuery->where(function ($q) {
+                    $q->whereNull('color')->orWhere('color', '');
+                });
+            } else {
+                $productsQuery->where('color', 'like', "%{$colorFilter}%");
+            }
+        }
+
+        if ($request->filled('search')) {
+            $search = $request->query('search');
+            $productsQuery->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('short_description', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%")
+                  ->orWhere('size', 'like', "%{$search}%")
+                  ->orWhere('color', 'like', "%{$search}%");
+            });
+        }
+
+        $products = $productsQuery->paginate(12)->withQueryString();
+
+        // Collect available colors for filter
+        $availableColors = Product::active()
+            ->whereNotNull('color')
+            ->where('color', '!=', '')
+            ->distinct()
+            ->pluck('color')
+            ->filter()
+            ->values();
+
+        return view('products.index', compact(
+            'categories',
+            'selectedCategory',
+            'selectedSubcategory',
+            'products',
+            'availableColors'
+        ));
+    }
+
+    /**
+     * Display single product detail modal/page.
+     */
+    public function productDetail(Product $product)
+    {
+        $product->load(['category', 'subcategory']);
+        
+        $relatedProducts = Product::active()
+            ->where('category_id', $product->category_id)
+            ->where('id', '!=', $product->id)
+            ->take(4)
+            ->get();
+
+        return view('products.show', compact('product', 'relatedProducts'));
     }
 }

@@ -27,6 +27,10 @@ Route::get('/about-us', [HomeController::class, 'about'])->name('website.about')
 Route::get('/why-wellnox', [HomeController::class, 'whyWellnox'])->name('website.why-wellnox');
 Route::get('/contact-us', [HomeController::class, 'contact'])->name('website.contact');
 
+// Marvelous Products Showcase & Detail Routes
+Route::get('/products', [HomeController::class, 'products'])->name('website.products');
+Route::get('/products/{product:slug}', [HomeController::class, 'productDetail'])->name('website.products.show');
+
 // Contact & Quote Enquiry submission route
 Route::post('/contact/submit', [HomeController::class, 'submitQuote'])->name('website.contact.submit');
 

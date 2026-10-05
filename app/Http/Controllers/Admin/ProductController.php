@@ -18,19 +18,25 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Product::with('category');
+        $query = Product::with(['category', 'subcategory']);
 
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                   ->orWhere('short_description', 'like', "%{$search}%")
+                  ->orWhere('size', 'like', "%{$search}%")
+                  ->orWhere('color', 'like', "%{$search}%")
                   ->orWhere('slug', 'like', "%{$search}%");
             });
         }
 
         if ($request->filled('category_id')) {
             $query->where('category_id', $request->input('category_id'));
+        }
+
+        if ($request->filled('subcategory_id')) {
+            $query->where('subcategory_id', $request->input('subcategory_id'));
         }
 
         if ($request->filled('status')) {
@@ -42,7 +48,7 @@ class ProductController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        $categories = ProductCategory::orderBy('name')->get();
+        $categories = ProductCategory::with('subcategories')->orderBy('sort_order')->orderBy('name')->get();
 
         return view('admin.products.index', compact('products', 'categories'));
     }
@@ -52,7 +58,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        $categories = ProductCategory::orderBy('name')->get();
+        $categories = ProductCategory::with('subcategories')->orderBy('sort_order')->orderBy('name')->get();
         return view('admin.products.create', compact('categories'));
     }
 
@@ -89,7 +95,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        $product->load('category');
+        $product->load(['category', 'subcategory']);
         return view('admin.products.show', compact('product'));
     }
 
@@ -98,7 +104,7 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        $categories = ProductCategory::orderBy('name')->get();
+        $categories = ProductCategory::with('subcategories')->orderBy('sort_order')->orderBy('name')->get();
         return view('admin.products.edit', compact('product', 'categories'));
     }
 

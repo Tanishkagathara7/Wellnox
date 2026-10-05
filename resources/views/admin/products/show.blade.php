@@ -39,6 +39,34 @@
                                     </td>
                                 </tr>
                                 <tr>
+                                    <td class="text-muted fw-bold">SUBCATEGORY:</td>
+                                    <td>
+                                        @if($product->subcategory)
+                                            <span class="badge bg-dark rounded-pill px-2.5">
+                                                {{ $product->subcategory->name }}
+                                            </span>
+                                        @else
+                                            <span class="text-muted fst-italic">None</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted fw-bold">SIZE / DIMENSION:</td>
+                                    <td>
+                                        <strong>{{ $product->size ?: 'Not specified' }}</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted fw-bold">COLOR / FINISH:</td>
+                                    <td>
+                                        @if($product->color)
+                                            <span class="badge bg-warning text-dark border px-2.5">{{ $product->color }}</span>
+                                        @else
+                                            <span class="text-muted fst-italic">No color</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                                <tr>
                                     <td class="text-muted fw-bold">SLUG:</td>
                                     <td><code>{{ $product->slug }}</code></td>
                                 </tr>

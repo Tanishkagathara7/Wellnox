@@ -21,17 +21,18 @@
                         <a class="nav-link-custom {{ request()->routeIs('website.about') ? 'active' : '' }}" href="{{ route('website.about') }}">About Us</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link-custom dropdown-toggle" href="#categories" id="productsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link-custom dropdown-toggle {{ request()->routeIs('website.products*') ? 'active' : '' }}" href="{{ route('website.products') }}" id="productsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Products <i class="bi bi-chevron-down nav-chevron"></i>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark shadow-lg border-secondary" aria-labelledby="productsDropdown">
-                            <li><a class="dropdown-item py-2" href="#categories">Bathroom Accessories</a></li>
-                            <li><a class="dropdown-item py-2" href="#categories">Ceramic Bathroom Accessories</a></li>
-                            <li><a class="dropdown-item py-2" href="#categories">Cloth Drying Stands</a></li>
-                            <li><a class="dropdown-item py-2" href="#categories">Modular Kitchen Accessories</a></li>
-                            <li><a class="dropdown-item py-2" href="#categories">Dish Drainers</a></li>
-                            <li><a class="dropdown-item py-2" href="#popular-designs">Floor Drains &amp; Gratings</a></li>
-                            <li><a class="dropdown-item py-2" href="#categories">MS Ladders</a></li>
+                            <li><a class="dropdown-item py-2 fw-semibold border-bottom border-secondary mb-1 text-gold" href="{{ route('website.products') }}"><i class="bi bi-grid-3x3-gap-fill me-1.5"></i> All Products Showcase</a></li>
+                            <li><a class="dropdown-item py-2" href="{{ route('website.products', ['category' => 'bathroom-accessories']) }}">Bathroom Accessories</a></li>
+                            <li><a class="dropdown-item py-2" href="{{ route('website.products', ['category' => 'ceramic-bathroom-accessories']) }}">Ceramic Bathroom Accessories</a></li>
+                            <li><a class="dropdown-item py-2" href="{{ route('website.products', ['category' => 'cloth-drying-stands']) }}">Cloth Drying Stands</a></li>
+                            <li><a class="dropdown-item py-2" href="{{ route('website.products', ['category' => 'modular-kitchen-accessories']) }}">Modular Kitchen Accessories</a></li>
+                            <li><a class="dropdown-item py-2" href="{{ route('website.products', ['category' => 'dish-drainers']) }}">Dish Drainers</a></li>
+                            <li><a class="dropdown-item py-2" href="{{ route('website.products', ['category' => 'floor-drains-gratings']) }}">Floor Drains &amp; Gratings</a></li>
+                            <li><a class="dropdown-item py-2" href="{{ route('website.products', ['category' => 'ms-ladders']) }}">MS Ladders</a></li>
                         </ul>
                     </li>
                     <li class="nav-item">
@@ -84,37 +85,42 @@
                 <div class="collapse" id="mobileProductsCollapse">
                     <ul class="navbar-nav mobile-inline-submenu ps-3 py-2 border-start border-secondary ms-2 mt-1">
                         <li class="nav-item">
-                            <a class="nav-link-mobile sub-item" href="#categories">
+                            <a class="nav-link-mobile sub-item text-gold fw-bold" href="{{ route('website.products') }}">
+                                <i class="bi bi-grid-3x3-gap-fill me-1"></i> All Products Showcase
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link-mobile sub-item" href="{{ route('website.products', ['category' => 'bathroom-accessories']) }}">
                                 Bathroom Accessories
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link-mobile sub-item" href="#categories">
+                            <a class="nav-link-mobile sub-item" href="{{ route('website.products', ['category' => 'ceramic-bathroom-accessories']) }}">
                                 Ceramic Bathroom Accessories
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link-mobile sub-item" href="#categories">
+                            <a class="nav-link-mobile sub-item" href="{{ route('website.products', ['category' => 'cloth-drying-stands']) }}">
                                 Cloth Drying Stands
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link-mobile sub-item" href="#categories">
+                            <a class="nav-link-mobile sub-item" href="{{ route('website.products', ['category' => 'modular-kitchen-accessories']) }}">
                                 Modular Kitchen Accessories
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link-mobile sub-item" href="#categories">
+                            <a class="nav-link-mobile sub-item" href="{{ route('website.products', ['category' => 'dish-drainers']) }}">
                                 Dish Drainers
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link-mobile sub-item" href="#popular-designs">
+                            <a class="nav-link-mobile sub-item" href="{{ route('website.products', ['category' => 'floor-drains-gratings']) }}">
                                 Floor Drains &amp; Gratings
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link-mobile sub-item" href="#categories">
+                            <a class="nav-link-mobile sub-item" href="{{ route('website.products', ['category' => 'ms-ladders']) }}">
                                 MS Ladders
                             </a>
                         </li>

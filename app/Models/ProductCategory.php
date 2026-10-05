@@ -28,11 +28,35 @@ class ProductCategory extends Model
     ];
 
     /**
+     * Relationship: Category has many Subcategories.
+     */
+    public function subcategories(): HasMany
+    {
+        return $this->hasMany(ProductSubcategory::class, 'category_id');
+    }
+
+    /**
      * Relationship: Category has many Products.
      */
     public function products(): HasMany
     {
         return $this->hasMany(Product::class, 'category_id');
+    }
+
+    /**
+     * Helper for category image URL.
+     */
+    public function getImageUrlAttribute(): string
+    {
+        if (empty($this->image)) {
+            return asset('assets/images/product/1.webp');
+        }
+
+        if (Str::startsWith($this->image, ['http://', 'https://', 'assets/'])) {
+            return asset($this->image);
+        }
+
+        return asset('storage/' . $this->image);
     }
 
     /**

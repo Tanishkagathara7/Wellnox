@@ -5,37 +5,33 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
-class Product extends Model
+class ProductSubcategory extends Model
 {
     use HasFactory;
 
-    protected $table = 'products';
+    protected $table = 'product_subcategories';
 
     protected $fillable = [
         'category_id',
-        'subcategory_id',
         'name',
         'slug',
-        'short_description',
         'description',
         'image',
-        'size',
-        'color',
         'status',
         'sort_order',
     ];
 
     protected $casts = [
         'category_id' => 'integer',
-        'subcategory_id' => 'integer',
         'status' => 'boolean',
         'sort_order' => 'integer',
     ];
 
     /**
-     * Relationship: Product belongs to ProductCategory.
+     * Relationship: Subcategory belongs to Category.
      */
     public function category(): BelongsTo
     {
@@ -43,15 +39,15 @@ class Product extends Model
     }
 
     /**
-     * Relationship: Product belongs to ProductSubcategory.
+     * Relationship: Subcategory has many Products.
      */
-    public function subcategory(): BelongsTo
+    public function products(): HasMany
     {
-        return $this->belongsTo(ProductSubcategory::class, 'subcategory_id');
+        return $this->hasMany(Product::class, 'subcategory_id');
     }
 
     /**
-     * Active products scope.
+     * Active scope.
      */
     public function scopeActive($query)
     {
@@ -59,11 +55,11 @@ class Product extends Model
     }
 
     /**
-     * Sorted products scope.
+     * Sorted scope.
      */
     public function scopeSorted($query)
     {
-        return $query->orderBy('sort_order', 'asc')->orderBy('id', 'desc');
+        return $query->orderBy('sort_order', 'asc')->orderBy('id', 'asc');
     }
 
     /**
@@ -72,7 +68,7 @@ class Product extends Model
     public function getImageUrlAttribute(): string
     {
         if (empty($this->image)) {
-            return asset('assets/images/popular-product/1.webp');
+            return asset('assets/images/product/1.webp');
         }
 
         if (Str::startsWith($this->image, ['http://', 'https://', 'assets/'])) {
@@ -89,15 +85,15 @@ class Product extends Model
     {
         parent::boot();
 
-        static::creating(function ($product) {
-            if (empty($product->slug)) {
-                $baseSlug = Str::slug($product->name);
+        static::creating(function ($subcategory) {
+            if (empty($subcategory->slug)) {
+                $baseSlug = Str::slug($subcategory->name);
                 $slug = $baseSlug;
                 $counter = 1;
                 while (static::where('slug', $slug)->exists()) {
                     $slug = $baseSlug . '-' . $counter++;
                 }
-                $product->slug = $slug;
+                $subcategory->slug = $slug;
             }
         });
     }
