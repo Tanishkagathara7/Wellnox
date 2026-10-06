@@ -76,56 +76,77 @@ document.addEventListener('DOMContentLoaded', () => {
             gsap.registerPlugin(ScrollTrigger);
         }
 
-        // Hero Entrance Timeline
-        const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+        // Hero Entrance Timeline (Only if hero exists)
+        const heroSection = document.getElementById('hero');
+        if (heroSection) {
+            const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-        heroTl.from('.hero-bg-img', {
-            scale: 1.15,
-            duration: 1.8,
-            ease: 'power2.out'
-        }, 0)
-        .from('.site-header', {
-            y: -50,
-            opacity: 0,
-            duration: 0.8
-        }, 0.2)
-        .from('.hero-eyebrow', {
-            y: 20,
-            opacity: 0,
-            duration: 0.6
-        }, 0.4)
-        .from('.hero-title', {
-            y: 35,
-            opacity: 0,
-            duration: 0.9
-        }, 0.5)
-        .from('.hero-lead', {
-            y: 25,
-            opacity: 0,
-            duration: 0.7
-        }, 0.7)
-        .from('.hero-cta-group', {
-            y: 20,
-            opacity: 0,
-            duration: 0.6
-        }, 0.8)
-        .from('.hero-calligraphy-quote', {
-            x: 30,
-            opacity: 0,
-            duration: 1
-        }, 0.6)
-        .from('.badge-20-years-wrap', {
-            scale: 0.6,
-            opacity: 0,
-            duration: 0.8,
-            ease: 'back.out(1.7)'
-        }, 0.9)
-        .from('.hero-feature-item', {
-            y: 20,
-            opacity: 0,
-            duration: 0.5,
-            stagger: 0.1
-        }, 1.0);
+            if (heroSection.querySelector('.hero-bg-img')) {
+                heroTl.from(heroSection.querySelectorAll('.hero-bg-img'), {
+                    scale: 1.15,
+                    duration: 1.8,
+                    ease: 'power2.out'
+                }, 0);
+            }
+            if (document.querySelector('.site-header')) {
+                heroTl.from('.site-header', {
+                    y: -50,
+                    opacity: 0,
+                    duration: 0.8
+                }, 0.2);
+            }
+            if (heroSection.querySelector('.hero-eyebrow')) {
+                heroTl.from(heroSection.querySelectorAll('.hero-eyebrow'), {
+                    y: 20,
+                    opacity: 0,
+                    duration: 0.6
+                }, 0.4);
+            }
+            if (heroSection.querySelector('.hero-title')) {
+                heroTl.from(heroSection.querySelectorAll('.hero-title'), {
+                    y: 35,
+                    opacity: 0,
+                    duration: 0.9
+                }, 0.5);
+            }
+            if (heroSection.querySelector('.hero-lead')) {
+                heroTl.from(heroSection.querySelectorAll('.hero-lead'), {
+                    y: 25,
+                    opacity: 0,
+                    duration: 0.7
+                }, 0.7);
+            }
+            if (heroSection.querySelector('.hero-cta-group')) {
+                heroTl.from(heroSection.querySelectorAll('.hero-cta-group'), {
+                    y: 20,
+                    opacity: 0,
+                    duration: 0.6
+                }, 0.8);
+            }
+            if (heroSection.querySelector('.hero-calligraphy-quote')) {
+                heroTl.from(heroSection.querySelectorAll('.hero-calligraphy-quote'), {
+                    x: 30,
+                    opacity: 0,
+                    duration: 1
+                }, 0.6);
+            }
+            if (heroSection.querySelector('.badge-20-years-wrap')) {
+                heroTl.from(heroSection.querySelectorAll('.badge-20-years-wrap'), {
+                    scale: 0.6,
+                    opacity: 0,
+                    duration: 0.8,
+                    ease: 'back.out(1.7)'
+                }, 0.9);
+            }
+            if (heroSection.querySelector('.hero-feature-item')) {
+                heroTl.from(heroSection.querySelectorAll('.hero-feature-item'), {
+                    y: 20,
+                    opacity: 0,
+                    duration: 0.5,
+                    stagger: 0.1
+                }, 1.0);
+            }
+        }
 
         // ScrollTrigger Reveal for Categories
         gsap.from('.category-card', {

@@ -111,9 +111,9 @@
                             @enderror
                         </div>
 
-                        <!-- Image Upload -->
+                        <!-- Main Product Image Upload -->
                         <div class="mb-3">
-                            <label for="prodImage" class="admin-form-label">Product Image <span class="text-muted small">(Max 2MB: JPG, PNG, WEBP)</span></label>
+                            <label for="prodImage" class="admin-form-label">Primary Product Image <span class="text-muted small">(Max 2MB: JPG, PNG, WEBP)</span></label>
                             <input type="file" name="image" id="prodImage" class="form-control admin-form-control admin-image-input @error('image') is-invalid @enderror" data-preview="prodPreviewImg" accept="image/*">
                             @error('image')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -125,6 +125,16 @@
                                     <span class="text-muted small" id="noImgText">No image selected</span>
                                 </div>
                             </div>
+                        </div>
+
+                        <!-- Additional Gallery Images Upload (Multiple) -->
+                        <div class="mb-3">
+                            <label for="galleryImages" class="admin-form-label">Additional Product Gallery Images <span class="text-muted small">(Select multiple images)</span></label>
+                            <input type="file" name="gallery_images[]" id="galleryImages" class="form-control admin-form-control @error('gallery_images.*') is-invalid @enderror" multiple accept="image/*">
+                            <div class="form-text text-muted small">Upload multiple angles, in-situ render views, or detail shots.</div>
+                            @error('gallery_images.*')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="row g-3 mb-4">

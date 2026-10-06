@@ -20,20 +20,63 @@
                     <li class="nav-item">
                         <a class="nav-link-custom {{ request()->routeIs('website.about') ? 'active' : '' }}" href="{{ route('website.about') }}">About Us</a>
                     </li>
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown dropdown-mega-product">
                         <a class="nav-link-custom dropdown-toggle {{ request()->routeIs('website.products*') ? 'active' : '' }}" href="{{ route('website.products') }}" id="productsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Products <i class="bi bi-chevron-down nav-chevron"></i>
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-dark shadow-lg border-secondary" aria-labelledby="productsDropdown">
-                            <li><a class="dropdown-item py-2 fw-semibold border-bottom border-secondary mb-1 text-gold" href="{{ route('website.products') }}"><i class="bi bi-grid-3x3-gap-fill me-1.5"></i> All Products Showcase</a></li>
-                            <li><a class="dropdown-item py-2" href="{{ route('website.products', ['category' => 'bathroom-accessories']) }}">Bathroom Accessories</a></li>
-                            <li><a class="dropdown-item py-2" href="{{ route('website.products', ['category' => 'ceramic-bathroom-accessories']) }}">Ceramic Bathroom Accessories</a></li>
-                            <li><a class="dropdown-item py-2" href="{{ route('website.products', ['category' => 'cloth-drying-stands']) }}">Cloth Drying Stands</a></li>
-                            <li><a class="dropdown-item py-2" href="{{ route('website.products', ['category' => 'modular-kitchen-accessories']) }}">Modular Kitchen Accessories</a></li>
-                            <li><a class="dropdown-item py-2" href="{{ route('website.products', ['category' => 'dish-drainers']) }}">Dish Drainers</a></li>
-                            <li><a class="dropdown-item py-2" href="{{ route('website.products', ['category' => 'floor-drains-gratings']) }}">Floor Drains &amp; Gratings</a></li>
-                            <li><a class="dropdown-item py-2" href="{{ route('website.products', ['category' => 'ms-ladders']) }}">MS Ladders</a></li>
-                        </ul>
+                        <!-- Luxury Interactive Mega Menu -->
+                        <div class="dropdown-menu dropdown-menu-dark mega-menu-box shadow-2xl p-0" aria-labelledby="productsDropdown">
+                            <div class="mega-menu-inner row g-0">
+                                <!-- Left Column: Categories List (Clean Side Panel Format) -->
+                                <div class="col-lg-6 mega-menu-nav p-3">
+                                    <div class="mega-menu-list">
+                                        @php
+                                            $panelCategories = isset($navCategories) && $navCategories->isNotEmpty() 
+                                                ? $navCategories 
+                                                : \App\Models\ProductCategory::active()->sorted()->withCount(['products' => function($q) { $q->active(); }])->get();
+                                        @endphp
+
+                                        @foreach($panelCategories as $index => $cat)
+                                            <a class="mega-nav-item {{ $index === 0 ? 'active' : '' }} d-flex align-items-center justify-content-between" 
+                                               href="{{ route('website.products', ['category' => $cat->slug]) }}"
+                                               data-title="{{ $cat->name }}"
+                                               data-desc="{{ $cat->description ?: 'Engineered with certified AISI 304 stainless steel and precision architectural craftsmanship.' }}"
+                                               data-image="{{ $cat->image_url }}"
+                                               data-link="{{ route('website.products', ['category' => $cat->slug]) }}">
+                                                <span class="mega-item-text">{{ $cat->name }}</span>
+                                                <span class="mega-count-pill">{{ $cat->products_count }}</span>
+                                            </a>
+                                        @endforeach
+                                    </div>
+                                </div>
+
+                                <!-- Right Column: Featured Visual Showcase Card -->
+                                <div class="col-lg-6 mega-menu-preview p-3">
+                                    <div class="mega-preview-card h-100 d-flex flex-column justify-content-between">
+                                        <div class="mega-preview-img-wrap">
+                                            <img id="megaPreviewImg" 
+                                                 src="{{ asset('assets/images/product/3.webp') }}" 
+                                                 alt="Featured Category" 
+                                                 class="mega-preview-img">
+                                            <div class="mega-preview-badge">
+                                                <i class="bi bi-award-fill text-gold me-1"></i> AISI 304 Grade
+                                            </div>
+                                        </div>
+
+                                        <div class="mega-preview-content pt-3">
+                                            <h4 class="mega-preview-title" id="megaPreviewTitle">Bathroom Accessories</h4>
+                                            <p class="mega-preview-desc" id="megaPreviewDesc">
+                                                Contemporary towel bars, soap dispensers, robe hooks and luxury glass shelf brackets.
+                                            </p>
+                                            <a href="{{ route('website.products', ['category' => 'bathroom-accessories']) }}" class="btn-mega-view" id="megaPreviewBtn">
+                                                <span>View Collection</span>
+                                                <i class="bi bi-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link-custom" href="{{ asset('assets/images/catalog/wellnox_Drainer_New_Catalog.pdf') }}" target="_blank" rel="noopener noreferrer">Catalogue</a>
@@ -84,11 +127,6 @@
                 <!-- Submenu Items (Toggles directly in place) -->
                 <div class="collapse" id="mobileProductsCollapse">
                     <ul class="navbar-nav mobile-inline-submenu ps-3 py-2 border-start border-secondary ms-2 mt-1">
-                        <li class="nav-item">
-                            <a class="nav-link-mobile sub-item text-gold fw-bold" href="{{ route('website.products') }}">
-                                <i class="bi bi-grid-3x3-gap-fill me-1"></i> All Products Showcase
-                            </a>
-                        </li>
                         <li class="nav-item">
                             <a class="nav-link-mobile sub-item" href="{{ route('website.products', ['category' => 'bathroom-accessories']) }}">
                                 Bathroom Accessories
@@ -171,3 +209,45 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const megaNavItems = document.querySelectorAll('.mega-nav-item');
+    const previewImg = document.getElementById('megaPreviewImg');
+    const previewTitle = document.getElementById('megaPreviewTitle');
+    const previewDesc = document.getElementById('megaPreviewDesc');
+    const previewBtn = document.getElementById('megaPreviewBtn');
+
+    if (!megaNavItems.length || !previewImg) return;
+
+    megaNavItems.forEach(item => {
+        item.addEventListener('mouseenter', function () {
+            // Remove active from all
+            megaNavItems.forEach(i => i.classList.remove('active'));
+            this.classList.add('active');
+
+            const title = this.getAttribute('data-title');
+            const desc = this.getAttribute('data-desc');
+            const image = this.getAttribute('data-image');
+            const link = this.getAttribute('data-link');
+
+            if (previewImg && image) {
+                previewImg.style.opacity = '0.4';
+                setTimeout(() => {
+                    previewImg.src = image;
+                    previewImg.style.opacity = '1';
+                }, 100);
+            }
+            if (previewTitle && title) {
+                previewTitle.textContent = title;
+            }
+            if (previewDesc && desc) {
+                previewDesc.textContent = desc;
+            }
+            if (previewBtn && link) {
+                previewBtn.href = link;
+            }
+        });
+    });
+});
+</script>

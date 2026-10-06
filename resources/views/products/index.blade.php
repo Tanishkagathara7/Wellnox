@@ -5,41 +5,86 @@
 
 @section('content')
 
-    <!-- HERO HEADER: Sleek Clean Architectural Header -->
-    <section class="products-hero-section">
-        <div class="container">
-            <nav aria-label="breadcrumb" class="mb-2">
-                <ol class="breadcrumb luxury-breadcrumb mb-0">
-                    <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                    <li class="breadcrumb-item"><a href="{{ route('website.products') }}">Products</a></li>
-                    @if($selectedCategory)
-                        <li class="breadcrumb-item active" aria-current="page">{{ $selectedCategory->name }}</li>
-                    @endif
+    <!-- ==========================================================================
+       1. CREATIVE LUXURY ARCHITECTURAL PAGE TITLE & BREADCRUMB HERO (MATCHING WHY WELLNOX / ABOUT US)
+       ========================================================================== -->
+    <section class="about-hero-creative position-relative overflow-hidden">
+        <!-- Rich Luxury Architectural Background Image with Deep Gradient Mesh & Glows -->
+        <div class="about-hero-bg-layer" style="background-image: url('{{ asset('assets/images/why-wellnox-banner.webp') }}');"></div>
+        <div class="about-hero-ambient-darkener"></div>
+        <div class="about-creative-glow glow-center" aria-hidden="true"></div>
+        <div class="about-creative-glow glow-corner glow-corner-left" aria-hidden="true"></div>
+        <div class="about-creative-glow glow-corner glow-corner-right" aria-hidden="true"></div>
+        <div class="about-creative-grid-overlay" aria-hidden="true"></div>
+        
+        <!-- Subtle Architectural Floating Watermark -->
+        <div class="about-hero-watermark" aria-hidden="true">WELLNOX</div>
+        
+        <div class="container position-relative z-3">
+            <div class="about-hero-creative-inner text-center">
+                <!-- Clean Bold Page Title -->
+                <h1 class="about-creative-page-title mb-3">
                     @if($selectedSubcategory)
-                        <li class="breadcrumb-item active text-gold" aria-current="page">{{ $selectedSubcategory->name }}</li>
+                        {{ $selectedSubcategory->name }}
+                    @elseif($selectedCategory)
+                        {{ $selectedCategory->name }}
+                    @else
+                        Our <span class="text-gold font-serif">Products</span>
                     @endif
-                </ol>
-            </nav>
+                </h1>
 
-            <div class="row align-items-center justify-content-between g-3">
-                <div class="col-lg-8">
-                    <h1 class="products-hero-title mb-1">
-                        @if($selectedSubcategory)
-                            <span class="text-white">{{ $selectedSubcategory->name }}</span>
-                        @elseif($selectedCategory)
-                            <span class="text-white">{{ $selectedCategory->name }}</span>
-                        @else
-                            <span class="text-white">Product Collection</span>
-                        @endif
-                    </h1>
-                    <p class="products-hero-subtitle text-white-50 mb-0">
-                        {{ $selectedSubcategory && $selectedSubcategory->description ? $selectedSubcategory->description : ($selectedCategory && $selectedCategory->description ? $selectedCategory->description : 'Engineered with certified AISI 304 stainless steel and precision architectural craftsmanship.') }}
-                    </p>
+                <!-- Architectural Drain Slotted Accent Divider -->
+                <div class="mb-4 d-flex justify-content-center">
+                    <x-drain-divider theme="dark" align="center" />
                 </div>
-                <div class="col-lg-4 text-lg-end">
-                    <span class="trust-pill-tag">
-                        <i class="bi bi-patch-check-fill text-gold me-1"></i> AISI 304 Certified
-                    </span>
+
+                <!-- Sleek Creative Glass Breadcrumb Capsule (Identical to Why Wellnox / About Us) -->
+                <div class="d-inline-block">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb creative-glass-breadcrumb mb-0">
+                            <li class="breadcrumb-item">
+                                <a href="{{ route('home') }}" class="breadcrumb-home-link">
+                                    <i class="bi bi-house-door-fill text-gold me-1"></i>
+                                    <span>Home</span>
+                                </a>
+                            </li>
+                            <li class="breadcrumb-separator">
+                                <i class="bi bi-chevron-right"></i>
+                            </li>
+                            @if($selectedCategory || $selectedSubcategory)
+                                <li class="breadcrumb-item">
+                                    <a href="{{ route('website.products') }}" class="breadcrumb-home-link">
+                                        <span>Products</span>
+                                    </a>
+                                </li>
+                                <li class="breadcrumb-separator">
+                                    <i class="bi bi-chevron-right"></i>
+                                </li>
+                            @else
+                                <li class="breadcrumb-item active" aria-current="page">
+                                    <span>Products</span>
+                                </li>
+                            @endif
+
+                            @if($selectedCategory && !$selectedSubcategory)
+                                <li class="breadcrumb-item active" aria-current="page">
+                                    <span>{{ $selectedCategory->name }}</span>
+                                </li>
+                            @elseif($selectedCategory && $selectedSubcategory)
+                                <li class="breadcrumb-item">
+                                    <a href="{{ route('website.products', ['category' => $selectedCategory->slug]) }}" class="breadcrumb-home-link">
+                                        <span>{{ $selectedCategory->name }}</span>
+                                    </a>
+                                </li>
+                                <li class="breadcrumb-separator">
+                                    <i class="bi bi-chevron-right"></i>
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">
+                                    <span>{{ $selectedSubcategory->name }}</span>
+                                </li>
+                            @endif
+                        </ol>
+                    </nav>
                 </div>
             </div>
         </div>
@@ -125,50 +170,9 @@
                             @endforeach
                         </div>
 
-                        <!-- Filter By Color / Finish Widget -->
-                        <div class="sidebar-filter-block mt-4 pt-3 border-top">
-                            <div class="d-flex align-items-center justify-content-between mb-2.5">
-                                <span class="filter-block-title">
-                                    <i class="bi bi-palette text-gold me-1"></i> Finish / Color
-                                </span>
-                                @if(request('color'))
-                                    <a href="{{ route('website.products', request()->except('color')) }}" class="text-danger small text-decoration-none">
-                                        Clear
-                                    </a>
-                                @endif
-                            </div>
-                            
-                            <div class="color-chips-list">
-                                <a href="{{ route('website.products', request()->except('color')) }}" 
-                                   class="color-chip-btn {{ !request('color') ? 'active' : '' }}">
-                                    All
-                                </a>
-                                <a href="{{ route('website.products', array_merge(request()->all(), ['color' => 'has_color', 'page' => 1])) }}" 
-                                   class="color-chip-btn {{ request('color') === 'has_color' ? 'active' : '' }}">
-                                    <span class="color-indicator-dot colored"></span> With Color
-                                </a>
-                                <a href="{{ route('website.products', array_merge(request()->all(), ['color' => 'no_color', 'page' => 1])) }}" 
-                                   class="color-chip-btn {{ request('color') === 'no_color' ? 'active' : '' }}">
-                                    <span class="color-indicator-dot natural"></span> Natural (No Color)
-                                </a>
 
-                                @foreach($availableColors as $col)
-                                    <a href="{{ route('website.products', array_merge(request()->all(), ['color' => $col, 'page' => 1])) }}" 
-                                       class="color-chip-btn {{ request('color') === $col ? 'active' : '' }}">
-                                        {{ $col }}
-                                    </a>
-                                @endforeach
-                            </div>
-                        </div>
 
-                        <!-- Help / Custom Sizing Callout in Sidebar -->
-                        <div class="sidebar-help-box mt-4 p-3 rounded-3">
-                            <div class="fw-semibold text-dark small mb-1">Custom Sizes &amp; OE Supply</div>
-                            <p class="small text-muted mb-2 lh-sm">Need customized length channel drainers or bespoke fittings?</p>
-                            <a href="{{ route('website.contact') }}" class="btn btn-dark btn-sm w-100 rounded-pill py-1.5">
-                                Inquire Custom Size
-                            </a>
-                        </div>
+
 
                     </div>
                 </aside>
@@ -178,64 +182,66 @@
 
                     <!-- Top Filter & Search Action Bar -->
                     <div class="catalog-top-bar mb-4">
-                        <div class="row g-2 align-items-center justify-content-between">
+                        <div class="row g-3 align-items-center justify-content-between">
                             
-                            <!-- Result Count and Active Breadcrumb Pills -->
-                            <div class="col-md-6">
+                            <!-- Left: Clean Result Count & Active Filter Tags -->
+                            <div class="col-md-7 col-lg-7">
                                 <div class="d-flex align-items-center gap-2 flex-wrap">
-                                    <span class="result-count-label">
-                                        Showing <strong>{{ $products->total() }}</strong> {{ Str::plural('product', $products->total()) }}
+                                    <span class="result-count-label d-flex align-items-center me-2">
+                                        <i class="bi bi-stack text-gold me-2"></i>
+                                        <span>Showing <strong>{{ $products->total() }}</strong> {{ Str::plural('product', $products->total()) }}</span>
                                     </span>
 
                                     @if($selectedCategory)
                                         <span class="active-crumb-badge">
-                                            {{ $selectedCategory->name }}
+                                            <i class="bi bi-tag-fill me-1 small opacity-75"></i> {{ $selectedCategory->name }}
                                         </span>
                                     @endif
 
                                     @if($selectedSubcategory)
                                         <span class="active-crumb-badge sub">
-                                            {{ $selectedSubcategory->name }}
-                                            <a href="{{ route('website.products', ['category' => $selectedCategory->slug]) }}" class="ms-1 text-danger text-decoration-none">&times;</a>
+                                            <span>{{ $selectedSubcategory->name }}</span>
+                                            <a href="{{ route('website.products', ['category' => $selectedCategory->slug]) }}" class="badge-remove-btn" title="Remove subcategory">&times;</a>
                                         </span>
                                     @endif
 
-                                    @if(request('color'))
-                                        <span class="active-crumb-badge color">
-                                            {{ request('color') === 'has_color' ? 'Colored' : (request('color') === 'no_color' ? 'Natural SS' : request('color')) }}
-                                            <a href="{{ route('website.products', request()->except('color')) }}" class="ms-1 text-danger text-decoration-none">&times;</a>
+                                    @if(request('search'))
+                                        <span class="active-crumb-badge search-tag">
+                                            <i class="bi bi-search me-1 small opacity-75"></i> "{{ request('search') }}"
+                                            <a href="{{ route('website.products', request()->except('search')) }}" class="badge-remove-btn" title="Clear search">&times;</a>
                                         </span>
                                     @endif
                                 </div>
                             </div>
 
-                            <!-- Search Box Form -->
-                            <div class="col-md-6 col-lg-5 text-md-end">
-                                <form method="GET" action="{{ route('website.products') }}" class="d-flex align-items-center gap-2">
+                            <!-- Right: Refined Integrated Search Form -->
+                            <div class="col-md-5 col-lg-5">
+                                <form method="GET" action="{{ route('website.products') }}" class="catalog-search-form">
                                     @if($selectedCategory)
                                         <input type="hidden" name="category" value="{{ $selectedCategory->slug }}">
                                     @endif
                                     @if($selectedSubcategory)
                                         <input type="hidden" name="subcategory" value="{{ $selectedSubcategory->slug }}">
                                     @endif
-                                    @if(request('color'))
-                                        <input type="hidden" name="color" value="{{ request('color') }}">
-                                    @endif
 
-                                    <div class="input-group search-clean-group flex-grow-1">
-                                        <span class="input-group-text bg-white border-end-0 text-muted ps-3">
-                                            <i class="bi bi-search small"></i>
-                                        </span>
-                                        <input type="text" name="search" class="form-control border-start-0 ps-1 form-control-sm" placeholder="Search by name, size..." value="{{ request('search') }}">
+                                    <div class="catalog-search-wrap">
+                                        <i class="bi bi-search search-leading-icon"></i>
+                                        <input type="text" 
+                                               name="search" 
+                                               class="catalog-search-input" 
+                                               placeholder="Search products by name..." 
+                                               value="{{ request('search') }}"
+                                               autocomplete="off">
                                         @if(request('search'))
-                                            <a href="{{ route('website.products', request()->except('search')) }}" class="input-group-text bg-white border-start-0 text-muted" title="Clear search">
-                                                <i class="bi bi-x"></i>
+                                            <a href="{{ route('website.products', request()->except('search')) }}" class="search-clear-btn" title="Clear search">
+                                                <i class="bi bi-x-circle-fill"></i>
                                             </a>
                                         @endif
+                                        <button type="submit" class="catalog-search-submit">
+                                            <span>Search</span>
+                                            <i class="bi bi-arrow-right"></i>
+                                        </button>
                                     </div>
-                                    <button type="submit" class="btn btn-outline-dark btn-sm px-3 text-nowrap">
-                                        Search
-                                    </button>
                                 </form>
                             </div>
 
@@ -248,30 +254,10 @@
                             <div class="col-12 col-sm-6 col-md-6 col-xl-4">
                                 <div class="catalog-product-card" id="product-{{ $product->id }}">
                                     
-                                    <!-- Image Frame -->
-                                    <div class="card-img-zone">
+                                    <!-- Image Frame (Clicking image opens detail page) -->
+                                    <a href="{{ route('website.products.show', $product->slug) }}" class="card-img-zone d-block text-decoration-none">
                                         <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="product-thumb-img" loading="lazy">
-                                        
-                                        <!-- Top Attribute Badges -->
-                                        <div class="card-badges-header">
-                                            @if($product->color)
-                                                <span class="badge-pill-color" title="Finish: {{ $product->color }}">
-                                                    <span class="dot-swatch" style="background-color: {{ Str::contains(strtolower($product->color), 'gold') ? '#D4AF37' : (Str::contains(strtolower($product->color), 'rose') ? '#B76E79' : (Str::contains(strtolower($product->color), 'black') ? '#222222' : (Str::contains(strtolower($product->color), 'green') ? '#1B4D3E' : (Str::contains(strtolower($product->color), 'blue') ? '#0D47A1' : '#C98A58')))) }};"></span>
-                                                    {{ $product->color }}
-                                                </span>
-                                            @else
-                                                <span class="badge-pill-plain" title="Natural Stainless Steel Finish">
-                                                    SS Natural
-                                                </span>
-                                            @endif
-
-                                            @if($product->size)
-                                                <span class="badge-pill-size">
-                                                    {{ $product->size }}
-                                                </span>
-                                            @endif
-                                        </div>
-                                    </div>
+                                    </a>
 
                                     <!-- Card Content Body -->
                                     <div class="card-content-zone">
@@ -287,31 +273,17 @@
                                             </a>
                                         </h3>
 
-                                        <!-- Short Description -->
-                                        <p class="product-card-desc">
-                                            {{ $product->short_description ?: Str::limit($product->description, 70, '...') }}
-                                        </p>
 
-                                        <!-- Spec Summary Strip -->
-                                        <div class="spec-data-strip">
-                                            <div class="spec-unit">
-                                                <span class="label">Size:</span>
-                                                <span class="val">{{ $product->size ?: 'Standard' }}</span>
-                                            </div>
-                                            <div class="spec-unit text-end">
-                                                <span class="label">Color:</span>
-                                                <span class="val {{ $product->color ? 'text-gold' : 'text-muted' }}">{{ $product->color ?: 'Natural' }}</span>
-                                            </div>
-                                        </div>
 
-                                        <!-- Action Buttons: Clean & Perfectly Proportioned -->
+                                        <!-- Action Buttons: 50 / 50 Half-and-Half -->
                                         <div class="card-action-bar">
                                             <a href="{{ route('website.contact') }}?product={{ urlencode($product->name) }}" class="btn-card-quote">
                                                 <span>Request Quote</span>
-                                                <i class="bi bi-arrow-right-short fs-6"></i>
+                                                <i class="bi bi-arrow-right-short"></i>
                                             </a>
                                             <a href="{{ route('website.products.show', $product->slug) }}" class="btn-card-view" title="View Specifications">
-                                                <i class="bi bi-eye"></i>
+                                                <i class="bi bi-eye me-1"></i>
+                                                <span>View Details</span>
                                             </a>
                                         </div>
                                     </div>
@@ -677,49 +649,144 @@
 }
 
 /* ==========================================================================
-   CATALOG TOP ACTION BAR
+   CATALOG TOP ACTION BAR — LUXURY REFINED
    ========================================================================== */
 .catalog-top-bar {
     background: #FFFFFF;
-    border: 1px solid #ECE7DE;
-    border-radius: 10px;
-    padding: 12px 18px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    border-radius: 14px;
+    padding: 10px 16px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03);
+    transition: all 0.25s ease;
 }
 
 .result-count-label {
     font-size: 13.5px;
-    color: #555555;
+    color: #444444;
+    font-weight: 450;
+}
+
+.result-count-label strong {
+    color: #111111;
+    font-weight: 700;
 }
 
 .active-crumb-badge {
     background: #111111;
     color: #FFFFFF;
-    font-size: 11px;
-    font-weight: 500;
-    padding: 3px 8px;
-    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 550;
+    padding: 5px 12px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
 }
 
 .active-crumb-badge.sub {
-    background: rgba(201, 138, 88, 0.15);
-    color: #8c5220;
-    border: 1px solid rgba(201, 138, 88, 0.3);
+    background: rgba(201, 138, 88, 0.14);
+    color: #92531e;
+    border: 1px solid rgba(201, 138, 88, 0.35);
+    box-shadow: none;
 }
 
-.active-crumb-badge.color {
-    background: #FAF0E6;
-    color: #7A4B23;
-    border: 1px solid #E4D5C5;
+.active-crumb-badge.search-tag {
+    background: #F4EFE6;
+    color: #222222;
+    border: 1px solid #E5DED3;
+    box-shadow: none;
 }
 
-.search-clean-group .form-control {
-    border-color: #DDDDDD;
+.badge-remove-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 4px;
+    color: inherit;
+    opacity: 0.65;
+    text-decoration: none;
+    font-size: 14px;
+    line-height: 1;
+    transition: opacity 0.2s;
+}
+
+.badge-remove-btn:hover {
+    opacity: 1;
+    color: #D32F2F;
+}
+
+/* Integrated Search Wrap */
+.catalog-search-wrap {
+    display: flex;
+    align-items: center;
+    background: #F8F6F2;
+    border: 1.5px solid #ECE7DE;
+    border-radius: 50px;
+    padding: 4px 5px 4px 14px;
+    transition: all 0.25s ease;
+}
+
+.catalog-search-wrap:focus-within {
+    background: #FFFFFF;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(201, 138, 88, 0.15);
+}
+
+.search-leading-icon {
     font-size: 13px;
+    color: #888888;
+    margin-right: 8px;
+    flex-shrink: 0;
 }
 
-.search-clean-group .input-group-text {
-    border-color: #DDDDDD;
+.catalog-search-input {
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 13px;
+    color: #222222;
+    width: 100%;
+    padding: 3px 0;
+}
+
+.catalog-search-input::placeholder {
+    color: #999999;
+}
+
+.search-clear-btn {
+    color: #999999;
+    font-size: 14px;
+    margin-right: 8px;
+    text-decoration: none;
+    transition: color 0.2s;
+    line-height: 1;
+}
+
+.search-clear-btn:hover {
+    color: #444444;
+}
+
+.catalog-search-submit {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: none;
+    background: #111111;
+    color: #FFFFFF;
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+
+.catalog-search-submit:hover {
+    background: var(--primary-gradient);
+    color: #FFFFFF;
+    box-shadow: 0 4px 10px rgba(201, 138, 88, 0.3);
 }
 
 /* ==========================================================================
@@ -745,24 +812,29 @@
 
 .card-img-zone {
     position: relative;
-    background: linear-gradient(180deg, #F8F6F2 0%, #FFFFFF 100%);
-    height: 190px;
+    background: #FAF7F2;
+    height: 220px;
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 16px;
+    padding: 0;
     border-bottom: 1px solid #F2EEE8;
+    overflow: hidden;
+    cursor: pointer;
 }
 
 .product-thumb-img {
-    max-height: 150px;
-    max-width: 100%;
-    object-fit: contain;
-    transition: transform 0.3s ease;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    display: block;
 }
 
 .catalog-product-card:hover .product-thumb-img {
-    transform: scale(1.04);
+    transform: scale(1.06);
 }
 
 .card-badges-header {
@@ -895,50 +967,50 @@
 .card-action-bar {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding-top: 10px;
+    gap: 8px;
+    padding-top: 12px;
     border-top: 1px solid #F2EEE8;
 }
 
-.btn-card-quote {
-    background: #111111;
-    color: #FFFFFF !important;
-    font-size: 12px;
+.btn-card-quote,
+.btn-card-view {
+    flex: 1 1 50%;
+    min-width: 0;
+    font-size: 11.5px;
     font-weight: 600;
-    padding: 7px 12px;
+    padding: 8px 10px;
     border-radius: var(--radius-pill);
     text-decoration: none;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 2px;
-    flex: 1;
-    transition: all 0.25s;
+    white-space: nowrap;
+    transition: all 0.25s ease;
+}
+
+.btn-card-quote {
+    background: #111111;
+    color: #FFFFFF !important;
+    border: 1px solid #111111;
 }
 
 .btn-card-quote:hover {
     background: var(--primary-gradient);
+    border-color: var(--primary);
     transform: translateY(-1px);
 }
 
 .btn-card-view {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
+    background: #FFFFFF;
+    color: #222222 !important;
     border: 1px solid #DDDDDD;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #444444;
-    text-decoration: none;
-    font-size: 12px;
-    transition: all 0.2s;
 }
 
 .btn-card-view:hover {
     border-color: var(--primary);
-    color: var(--primary);
+    color: var(--primary) !important;
     background: #FAF7F2;
+    transform: translateY(-1px);
 }
 
 .empty-state-icon {

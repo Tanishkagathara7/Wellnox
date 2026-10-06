@@ -112,9 +112,9 @@
                             @enderror
                         </div>
 
-                        <!-- Image Upload -->
+                        <!-- Primary Image Upload -->
                         <div class="mb-3">
-                            <label for="prodImage" class="admin-form-label">Product Image <span class="text-muted small">(Leave empty to retain existing)</span></label>
+                            <label for="prodImage" class="admin-form-label">Primary Product Image <span class="text-muted small">(Leave empty to retain existing)</span></label>
                             <input type="file" name="image" id="prodImage" class="form-control admin-form-control admin-image-input @error('image') is-invalid @enderror" data-preview="prodPreviewImg" accept="image/*">
                             @error('image')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -125,6 +125,34 @@
                                     <img id="prodPreviewImg" src="{{ $product->image_url }}" alt="Preview">
                                 </div>
                             </div>
+                        </div>
+
+                        <!-- Additional Gallery Images Upload & Existing Management -->
+                        <div class="mb-4">
+                            <label class="admin-form-label">Product Gallery Images (Multiple)</label>
+                            
+                            @if(!empty($product->gallery_images) && is_array($product->gallery_images) && count($product->gallery_images) > 0)
+                                <div class="mb-3 p-3 bg-light rounded-3 border">
+                                    <div class="small fw-bold text-dark mb-2">Existing Gallery Photos (Check to Remove):</div>
+                                    <div class="d-flex flex-wrap gap-3">
+                                        @foreach($product->gallery_images as $gPath)
+                                            <div class="position-relative border rounded p-1 bg-white text-center" style="width: 100px;">
+                                                <img src="{{ Str::startsWith($gPath, ['http', 'assets']) ? asset($gPath) : asset('storage/' . $gPath) }}" alt="Gallery" class="img-fluid rounded mb-1" style="height: 70px; object-fit: contain;">
+                                                <div class="form-check form-check-inline small m-0">
+                                                    <input class="form-check-input" type="checkbox" name="remove_gallery_images[]" value="{{ $gPath }}" id="rem_g_{{ $loop->index }}">
+                                                    <label class="form-check-label text-danger small" for="rem_g_{{ $loop->index }}">Remove</label>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
+
+                            <label for="galleryImages" class="form-label small text-muted">Add More Gallery Images <span class="small">(Upload multiple JPG, PNG, WEBP)</span></label>
+                            <input type="file" name="gallery_images[]" id="galleryImages" class="form-control admin-form-control @error('gallery_images.*') is-invalid @enderror" multiple accept="image/*">
+                            @error('gallery_images.*')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="row g-3 mb-4">

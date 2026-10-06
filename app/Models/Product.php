@@ -21,6 +21,7 @@ class Product extends Model
         'short_description',
         'description',
         'image',
+        'gallery_images',
         'size',
         'color',
         'status',
@@ -30,6 +31,7 @@ class Product extends Model
     protected $casts = [
         'category_id' => 'integer',
         'subcategory_id' => 'integer',
+        'gallery_images' => 'array',
         'status' => 'boolean',
         'sort_order' => 'integer',
     ];
@@ -80,6 +82,30 @@ class Product extends Model
         }
 
         return asset('storage/' . $this->image);
+    }
+
+    /**
+     * Get all image URLs including main image and gallery images.
+     *
+     * @return array<int, string>
+     */
+    public function getAllImagesAttribute(): array
+    {
+        $urls = [$this->image_url];
+
+        if (!empty($this->gallery_images) && is_array($this->gallery_images)) {
+            foreach ($this->gallery_images as $img) {
+                if (!empty($img)) {
+                    if (Str::startsWith($img, ['http://', 'https://', 'assets/'])) {
+                        $urls[] = asset($img);
+                    } else {
+                        $urls[] = asset('storage/' . $img);
+                    }
+                }
+            }
+        }
+
+        return array_values(array_unique($urls));
     }
 
     /**

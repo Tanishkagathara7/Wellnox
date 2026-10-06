@@ -84,6 +84,14 @@ class ProductController extends Controller
             $validated['image'] = $path;
         }
 
+        if ($request->hasFile('gallery_images')) {
+            $galleryPaths = [];
+            foreach ($request->file('gallery_images') as $file) {
+                $galleryPaths[] = $file->store('products/gallery', 'public');
+            }
+            $validated['gallery_images'] = $galleryPaths;
+        }
+
         Product::create($validated);
 
         return redirect()->route('admin.products.index')
@@ -134,6 +142,26 @@ class ProductController extends Controller
             $validated['image'] = $path;
         }
 
+        // Handle existing gallery and removals/additions
+        $existingGallery = is_array($product->gallery_images) ? $product->gallery_images : [];
+
+        if (!empty($validated['remove_gallery_images']) && is_array($validated['remove_gallery_images'])) {
+            foreach ($validated['remove_gallery_images'] as $imgToRemove) {
+                if (Storage::disk('public')->exists($imgToRemove)) {
+                    Storage::disk('public')->delete($imgToRemove);
+                }
+                $existingGallery = array_values(array_filter($existingGallery, fn($item) => $item !== $imgToRemove));
+            }
+        }
+
+        if ($request->hasFile('gallery_images')) {
+            foreach ($request->file('gallery_images') as $file) {
+                $existingGallery[] = $file->store('products/gallery', 'public');
+            }
+        }
+
+        $validated['gallery_images'] = $existingGallery;
+
         $product->update($validated);
 
         return redirect()->route('admin.products.index')
@@ -147,6 +175,14 @@ class ProductController extends Controller
     {
         if ($product->image && Storage::disk('public')->exists($product->image)) {
             Storage::disk('public')->delete($product->image);
+        }
+
+        if (!empty($product->gallery_images) && is_array($product->gallery_images)) {
+            foreach ($product->gallery_images as $gImg) {
+                if (Storage::disk('public')->exists($gImg)) {
+                    Storage::disk('public')->delete($gImg);
+                }
+            }
         }
 
         $product->delete();

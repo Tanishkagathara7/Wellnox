@@ -21,6 +21,8 @@ class StoreProductRequest extends FormRequest
             'short_description' => ['nullable', 'string', 'max:500'],
             'description'       => ['nullable', 'string'],
             'image'             => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'gallery_images'   => ['nullable', 'array'],
+            'gallery_images.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'size'              => ['nullable', 'string', 'max:150'],
             'color'             => ['nullable', 'string', 'max:100'],
             'status'            => ['required', 'boolean'],

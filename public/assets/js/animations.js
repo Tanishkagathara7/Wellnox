@@ -11,30 +11,43 @@ document.addEventListener('DOMContentLoaded', () => {
         gsap.registerPlugin(ScrollTrigger);
     }
 
-    // Hero Cinematic Entrance
-    const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    // Hero Cinematic Entrance (Only when Hero section is present on current page)
+    const heroSection = document.getElementById('hero');
+    if (heroSection) {
+        const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-    heroTl
-        .from('.site-header', {
-            y: -30,
-            opacity: 0,
-            duration: 0.6
-        }, 0)
-        .from('.hero-bg-img', {
-            scale: 1.15,
-            duration: 1.8,
-            ease: 'power2.out'
-        }, 0.1)
-        .from('.hero-badge-pill', {
-            y: 20,
-            opacity: 0,
-            duration: 0.6
-        }, 0.2)
-        .from('.hero-cta-group', {
-            y: 20,
-            opacity: 0,
-            duration: 0.6
-        }, 0.5);
+        if (document.querySelector('.site-header')) {
+            heroTl.from('.site-header', {
+                y: -30,
+                opacity: 0,
+                duration: 0.6
+            }, 0);
+        }
+
+        if (heroSection.querySelector('.hero-bg-img')) {
+            heroTl.from(heroSection.querySelectorAll('.hero-bg-img'), {
+                scale: 1.15,
+                duration: 1.8,
+                ease: 'power2.out'
+            }, 0.1);
+        }
+
+        if (heroSection.querySelector('.hero-badge-pill')) {
+            heroTl.from(heroSection.querySelector('.hero-badge-pill'), {
+                y: 20,
+                opacity: 0,
+                duration: 0.6
+            }, 0.2);
+        }
+
+        if (heroSection.querySelector('.hero-cta-group')) {
+            heroTl.from(heroSection.querySelector('.hero-cta-group'), {
+                y: 20,
+                opacity: 0,
+                duration: 0.6
+            }, 0.5);
+        }
+    }
 
     // Subtle fade-in on scroll using batch without hiding initial content
     if (typeof ScrollTrigger !== 'undefined') {

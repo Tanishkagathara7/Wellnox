@@ -23,11 +23,15 @@ class UpdateProductRequest extends FormRequest
             'slug'              => ['nullable', 'string', 'max:255', Rule::unique('products', 'slug')->ignore($productId)],
             'short_description' => ['nullable', 'string', 'max:500'],
             'description'       => ['nullable', 'string'],
-            'image'             => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
-            'size'              => ['nullable', 'string', 'max:150'],
-            'color'             => ['nullable', 'string', 'max:100'],
-            'status'            => ['required', 'boolean'],
-            'sort_order'        => ['nullable', 'integer', 'min:0'],
+            'image'                   => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'gallery_images'         => ['nullable', 'array'],
+            'gallery_images.*'       => ['image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'remove_gallery_images'  => ['nullable', 'array'],
+            'remove_gallery_images.*'=> ['string'],
+            'size'                    => ['nullable', 'string', 'max:150'],
+            'color'                   => ['nullable', 'string', 'max:100'],
+            'status'                  => ['required', 'boolean'],
+            'sort_order'              => ['nullable', 'integer', 'min:0'],
         ];
     }
 }
