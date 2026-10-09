@@ -75,8 +75,8 @@ class Product extends Model
             return asset('assets/images/popular-product/1.webp');
         }
 
-        if (Str::startsWith($this->image, ['http://', 'https://', 'assets/'])) {
-            return asset($this->image);
+        if (Str::startsWith($this->image, ['http://', 'https://', 'assets/', 'data:image/'])) {
+            return $this->image;
         }
 
         return asset('storage/'.$this->image);
@@ -94,8 +94,8 @@ class Product extends Model
         if (! empty($this->gallery_images) && is_array($this->gallery_images)) {
             foreach ($this->gallery_images as $img) {
                 if (! empty($img)) {
-                    if (Str::startsWith($img, ['http://', 'https://', 'assets/'])) {
-                        $urls[] = asset($img);
+                    if (Str::startsWith($img, ['http://', 'https://', 'assets/', 'data:image/'])) {
+                        $urls[] = $img;
                     } else {
                         $urls[] = asset('storage/'.$img);
                     }

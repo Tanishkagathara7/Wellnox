@@ -81,21 +81,15 @@ class ProductController extends Controller
         }
 
         if ($request->hasFile('image')) {
-            try {
-                $path = $request->file('image')->store('products', 'public');
-                $validated['image'] = $path;
-            } catch (\Throwable $e) {
-                // If storage filesystem is read-only (serverless), continue without crashing
-            }
+            $validated['image'] = $this->processImageAsDataUri($request->file('image'));
         }
 
         if ($request->hasFile('gallery_images')) {
             $galleryPaths = [];
             foreach ($request->file('gallery_images') as $file) {
-                try {
-                    $galleryPaths[] = $file->store('products/gallery', 'public');
-                } catch (\Throwable $e) {
-                    // If storage filesystem is read-only, continue without crashing
+                $uri = $this->processImageAsDataUri($file);
+                if ($uri) {
+                    $galleryPaths[] = $uri;
                 }
             }
             if (! empty($galleryPaths)) {
@@ -147,39 +141,22 @@ class ProductController extends Controller
         }
 
         if ($request->hasFile('image')) {
-            try {
-                if ($product->image && Storage::disk('public')->exists($product->image)) {
-                    Storage::disk('public')->delete($product->image);
-                }
-                $path = $request->file('image')->store('products', 'public');
-                $validated['image'] = $path;
-            } catch (\Throwable $e) {
-                // If storage filesystem is read-only, continue without crashing
-            }
+            $validated['image'] = $this->processImageAsDataUri($request->file('image'));
         }
 
         // Handle existing gallery and removals/additions
         $existingGallery = is_array($product->gallery_images) ? $product->gallery_images : [];
 
         if (! empty($validated['remove_gallery_images']) && is_array($validated['remove_gallery_images'])) {
-            foreach ($validated['remove_gallery_images'] as $imgToRemove) {
-                try {
-                    if (Storage::disk('public')->exists($imgToRemove)) {
-                        Storage::disk('public')->delete($imgToRemove);
-                    }
-                } catch (\Throwable $e) {
-                    // Ignore storage delete errors
-                }
-                $existingGallery = array_values(array_filter($existingGallery, fn ($item) => $item !== $imgToRemove));
-            }
+            $removals = $validated['remove_gallery_images'];
+            $existingGallery = array_values(array_filter($existingGallery, fn ($item) => ! in_array($item, $removals, true)));
         }
 
         if ($request->hasFile('gallery_images')) {
             foreach ($request->file('gallery_images') as $file) {
-                try {
-                    $existingGallery[] = $file->store('products/gallery', 'public');
-                } catch (\Throwable $e) {
-                    // Ignore storage store errors
+                $uri = $this->processImageAsDataUri($file);
+                if ($uri) {
+                    $existingGallery[] = $uri;
                 }
             }
         }
@@ -193,22 +170,74 @@ class ProductController extends Controller
     }
 
     /**
+     * Process an uploaded image file into a compressed Base64 WebP / JPEG data URI.
+     */
+    protected function processImageAsDataUri($file): ?string
+    {
+        if (! $file || ! $file->isValid()) {
+            return null;
+        }
+
+        try {
+            $path = $file->getRealPath();
+            $info = @getimagesize($path);
+            if (! $info) {
+                return 'data:'.$file->getMimeType().';base64,'.base64_encode(file_get_contents($path));
+            }
+
+            [$width, $height, $imageType] = $info;
+
+            $source = match ($imageType) {
+                IMAGETYPE_JPEG => @imagecreatefromjpeg($path),
+                IMAGETYPE_PNG => @imagecreatefrompng($path),
+                IMAGETYPE_WEBP => function_exists('imagecreatefromwebp') ? @imagecreatefromwebp($path) : false,
+                default => false,
+            };
+
+            if (! $source) {
+                return 'data:'.$file->getMimeType().';base64,'.base64_encode(file_get_contents($path));
+            }
+
+            // Downscale if unusually large (e.g. width or height > 1200px)
+            $maxDim = 1200;
+            if ($width > $maxDim || $height > $maxDim) {
+                $ratio = min($maxDim / $width, $maxDim / $height);
+                $newWidth = (int) round($width * $ratio);
+                $newHeight = (int) round($height * $ratio);
+
+                $resized = imagecreatetruecolor($newWidth, $newHeight);
+                imagealphablending($resized, false);
+                imagesavealpha($resized, true);
+                imagecopyresampled($resized, $source, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+                imagedestroy($source);
+                $source = $resized;
+            }
+
+            // Prefer WebP for optimal compression
+            ob_start();
+            if (function_exists('imagewebp')) {
+                imagewebp($source, null, 82);
+                $imageData = ob_get_clean();
+                imagedestroy($source);
+
+                return 'data:image/webp;base64,'.base64_encode($imageData);
+            }
+
+            imagejpeg($source, null, 85);
+            $imageData = ob_get_clean();
+            imagedestroy($source);
+
+            return 'data:image/jpeg;base64,'.base64_encode($imageData);
+        } catch (\Throwable $e) {
+            return 'data:'.$file->getMimeType().';base64,'.base64_encode(file_get_contents($file->getRealPath()));
+        }
+    }
+
+    /**
      * Remove the specified product from storage.
      */
     public function destroy(Product $product)
     {
-        if ($product->image && Storage::disk('public')->exists($product->image)) {
-            Storage::disk('public')->delete($product->image);
-        }
-
-        if (! empty($product->gallery_images) && is_array($product->gallery_images)) {
-            foreach ($product->gallery_images as $gImg) {
-                if (Storage::disk('public')->exists($gImg)) {
-                    Storage::disk('public')->delete($gImg);
-                }
-            }
-        }
-
         $product->delete();
 
         return redirect()->route('admin.products.index')

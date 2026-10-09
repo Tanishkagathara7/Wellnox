@@ -137,7 +137,7 @@
                                     <div class="d-flex flex-wrap gap-3">
                                         @foreach($product->gallery_images as $gPath)
                                             <div class="position-relative border rounded p-1 bg-white text-center" style="width: 100px;">
-                                                <img src="{{ Str::startsWith($gPath, ['http', 'assets']) ? asset($gPath) : asset('storage/' . $gPath) }}" alt="Gallery" class="img-fluid rounded mb-1" style="height: 70px; object-fit: contain;">
+                                                <img src="{{ Str::startsWith($gPath, ['http', 'assets', 'data:image']) ? $gPath : asset('storage/' . $gPath) }}" alt="Gallery" class="img-fluid rounded mb-1" style="height: 70px; object-fit: contain;">
                                                 <div class="form-check form-check-inline small m-0">
                                                     <input class="form-check-input" type="checkbox" name="remove_gallery_images[]" value="{{ $gPath }}" id="rem_g_{{ $loop->index }}">
                                                     <label class="form-check-label text-danger small" for="rem_g_{{ $loop->index }}">Remove</label>
