@@ -58,7 +58,7 @@ class ProductSubcategory extends Model
      */
     public function scopeActive($query)
     {
-        return $query->where('status', true);
+        return $query->whereIn('status', [true, 1, '1']);
     }
 
     /**

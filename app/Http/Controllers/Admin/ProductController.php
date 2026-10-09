@@ -69,6 +69,9 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request)
     {
         $validated = $request->validated();
+        if (isset($validated['status'])) {
+            $validated['status'] = (bool) $validated['status'];
+        }
 
         if (empty($validated['slug'])) {
             $baseSlug = Str::slug($validated['name']);
@@ -129,6 +132,9 @@ class ProductController extends Controller
     public function update(UpdateProductRequest $request, Product $product)
     {
         $validated = $request->validated();
+        if (isset($validated['status'])) {
+            $validated['status'] = (bool) $validated['status'];
+        }
 
         if (empty($validated['slug'])) {
             $baseSlug = Str::slug($validated['name']);
