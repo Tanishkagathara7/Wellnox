@@ -132,6 +132,9 @@
                             <label for="galleryImages" class="admin-form-label">Additional Product Gallery Images <span class="text-muted small">(Select multiple images)</span></label>
                             <input type="file" name="gallery_images[]" id="galleryImages" class="form-control admin-form-control @error('gallery_images.*') is-invalid @enderror" multiple accept="image/*">
                             <div class="form-text text-muted small">Upload multiple angles, in-situ render views, or detail shots.</div>
+                            @error('gallery_images')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
                             @error('gallery_images.*')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror

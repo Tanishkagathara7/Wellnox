@@ -150,6 +150,9 @@
 
                             <label for="galleryImages" class="form-label small text-muted">Add More Gallery Images <span class="small">(Upload multiple JPG, PNG, WEBP)</span></label>
                             <input type="file" name="gallery_images[]" id="galleryImages" class="form-control admin-form-control @error('gallery_images.*') is-invalid @enderror" multiple accept="image/*">
+                            @error('gallery_images')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
                             @error('gallery_images.*')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror

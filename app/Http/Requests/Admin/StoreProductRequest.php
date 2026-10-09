@@ -14,19 +14,19 @@ class StoreProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'              => ['required', 'string', 'max:255'],
-            'category_id'       => ['required', 'integer', 'exists:product_categories,id'],
-            'subcategory_id'    => ['nullable', 'integer', 'exists:product_subcategories,id'],
-            'slug'              => ['nullable', 'string', 'max:255', 'unique:products,slug'],
+            'name' => ['required', 'string', 'max:255'],
+            'category_id' => ['required', 'string'],
+            'subcategory_id' => ['nullable', 'string'],
+            'slug' => ['nullable', 'string', 'max:255', 'unique:products,slug'],
             'short_description' => ['nullable', 'string', 'max:500'],
-            'description'       => ['nullable', 'string'],
-            'image'             => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
-            'gallery_images'   => ['nullable', 'array'],
+            'description' => ['nullable', 'string'],
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'gallery_images' => ['nullable', 'array'],
             'gallery_images.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
-            'size'              => ['nullable', 'string', 'max:150'],
-            'color'             => ['nullable', 'string', 'max:100'],
-            'status'            => ['required', 'boolean'],
-            'sort_order'        => ['nullable', 'integer', 'min:0'],
+            'size' => ['nullable', 'string', 'max:150'],
+            'color' => ['nullable', 'string', 'max:100'],
+            'status' => ['required', 'boolean'],
+            'sort_order' => ['nullable', 'integer', 'min:0'],
         ];
     }
 }
