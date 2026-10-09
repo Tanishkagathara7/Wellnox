@@ -1294,7 +1294,7 @@ class HomeController extends Controller
 
         $relatedProducts = Product::active()
             ->where('category_id', $product->category_id)
-            ->where('id', '!=', $product->id)
+            ->where('_id', '!=', $product->_id ?? $product->id)
             ->take(4)
             ->get();
 

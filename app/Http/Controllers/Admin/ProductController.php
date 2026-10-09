@@ -130,7 +130,7 @@ class ProductController extends Controller
             $baseSlug = Str::slug($validated['name']);
             $slug = $baseSlug;
             $c = 1;
-            while (Product::where('slug', $slug)->where('id', '!=', $product->id)->exists()) {
+            while (Product::where('slug', $slug)->where('_id', '!=', $product->_id ?? $product->id)->exists()) {
                 $slug = $baseSlug.'-'.$c++;
             }
             $validated['slug'] = $slug;

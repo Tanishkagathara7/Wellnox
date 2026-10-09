@@ -63,7 +63,7 @@ class Product extends Model
      */
     public function scopeSorted($query)
     {
-        return $query->orderBy('sort_order', 'asc')->orderBy('id', 'desc');
+        return $query->orderBy('sort_order', 'asc')->orderBy('_id', 'desc');
     }
 
     /**

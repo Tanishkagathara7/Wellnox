@@ -107,7 +107,7 @@ class ProductSubcategoryController extends Controller
             $baseSlug = Str::slug($validated['name']);
             $slug = $baseSlug;
             $c = 1;
-            while (ProductSubcategory::where('slug', $slug)->where('id', '!=', $subcategory->id)->exists()) {
+            while (ProductSubcategory::where('slug', $slug)->where('_id', '!=', $subcategory->_id ?? $subcategory->id)->exists()) {
                 $slug = $baseSlug.'-'.$c++;
             }
             $validated['slug'] = $slug;
