@@ -38,7 +38,7 @@ class ProductSubcategoryController extends Controller
         }
 
         $subcategories = $query->orderBy('sort_order', 'asc')
-            ->orderBy('id', 'desc')
+            ->orderBy('_id', 'desc')
             ->paginate(12)
             ->withQueryString();
 

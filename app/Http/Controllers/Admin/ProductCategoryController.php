@@ -33,7 +33,7 @@ class ProductCategoryController extends Controller
         }
 
         $categories = $query->orderBy('sort_order', 'asc')
-            ->orderBy('id', 'desc')
+            ->orderBy('_id', 'desc')
             ->paginate(10)
             ->withQueryString();
 

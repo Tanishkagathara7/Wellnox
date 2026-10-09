@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Product;
-use App\Models\ProductCategory;
 use App\Http\Requests\Admin\StoreProductRequest;
 use App\Http\Requests\Admin\UpdateProductRequest;
+use App\Models\Product;
+use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -24,10 +24,10 @@ class ProductController extends Controller
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('short_description', 'like', "%{$search}%")
-                  ->orWhere('size', 'like', "%{$search}%")
-                  ->orWhere('color', 'like', "%{$search}%")
-                  ->orWhere('slug', 'like', "%{$search}%");
+                    ->orWhere('short_description', 'like', "%{$search}%")
+                    ->orWhere('size', 'like', "%{$search}%")
+                    ->orWhere('color', 'like', "%{$search}%")
+                    ->orWhere('slug', 'like', "%{$search}%");
             });
         }
 
@@ -44,7 +44,7 @@ class ProductController extends Controller
         }
 
         $products = $query->orderBy('sort_order', 'asc')
-            ->orderBy('id', 'desc')
+            ->orderBy('_id', 'desc')
             ->paginate(10)
             ->withQueryString();
 
@@ -59,6 +59,7 @@ class ProductController extends Controller
     public function create()
     {
         $categories = ProductCategory::with('subcategories')->orderBy('sort_order')->orderBy('name')->get();
+
         return view('admin.products.create', compact('categories'));
     }
 
@@ -74,7 +75,7 @@ class ProductController extends Controller
             $slug = $baseSlug;
             $c = 1;
             while (Product::where('slug', $slug)->exists()) {
-                $slug = $baseSlug . '-' . $c++;
+                $slug = $baseSlug.'-'.$c++;
             }
             $validated['slug'] = $slug;
         }
@@ -104,6 +105,7 @@ class ProductController extends Controller
     public function show(Product $product)
     {
         $product->load(['category', 'subcategory']);
+
         return view('admin.products.show', compact('product'));
     }
 
@@ -113,6 +115,7 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         $categories = ProductCategory::with('subcategories')->orderBy('sort_order')->orderBy('name')->get();
+
         return view('admin.products.edit', compact('product', 'categories'));
     }
 
@@ -128,7 +131,7 @@ class ProductController extends Controller
             $slug = $baseSlug;
             $c = 1;
             while (Product::where('slug', $slug)->where('id', '!=', $product->id)->exists()) {
-                $slug = $baseSlug . '-' . $c++;
+                $slug = $baseSlug.'-'.$c++;
             }
             $validated['slug'] = $slug;
         }
@@ -145,12 +148,12 @@ class ProductController extends Controller
         // Handle existing gallery and removals/additions
         $existingGallery = is_array($product->gallery_images) ? $product->gallery_images : [];
 
-        if (!empty($validated['remove_gallery_images']) && is_array($validated['remove_gallery_images'])) {
+        if (! empty($validated['remove_gallery_images']) && is_array($validated['remove_gallery_images'])) {
             foreach ($validated['remove_gallery_images'] as $imgToRemove) {
                 if (Storage::disk('public')->exists($imgToRemove)) {
                     Storage::disk('public')->delete($imgToRemove);
                 }
-                $existingGallery = array_values(array_filter($existingGallery, fn($item) => $item !== $imgToRemove));
+                $existingGallery = array_values(array_filter($existingGallery, fn ($item) => $item !== $imgToRemove));
             }
         }
 
@@ -177,7 +180,7 @@ class ProductController extends Controller
             Storage::disk('public')->delete($product->image);
         }
 
-        if (!empty($product->gallery_images) && is_array($product->gallery_images)) {
+        if (! empty($product->gallery_images) && is_array($product->gallery_images)) {
             foreach ($product->gallery_images as $gImg) {
                 if (Storage::disk('public')->exists($gImg)) {
                     Storage::disk('public')->delete($gImg);
@@ -196,8 +199,8 @@ class ProductController extends Controller
      */
     public function toggleStatus(Product $product)
     {
-        $product->update(['status' => !$product->status]);
+        $product->update(['status' => ! $product->status]);
 
-        return back()->with('success', 'Product status updated to ' . ($product->status ? 'Active' : 'Inactive') . '.');
+        return back()->with('success', 'Product status updated to '.($product->status ? 'Active' : 'Inactive').'.');
     }
 }
