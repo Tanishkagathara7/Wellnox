@@ -80,7 +80,7 @@
                     <tbody>
                         @forelse($subcategories as $sub)
                             <tr>
-                                <td class="text-muted small">{{ $sub->id }}</td>
+                                <td class="text-muted small">{{ $loop->iteration }}</td>
                                 <td>
                                     <img src="{{ $sub->image_url }}" alt="{{ $sub->name }}" class="admin-thumb">
                                 </td>

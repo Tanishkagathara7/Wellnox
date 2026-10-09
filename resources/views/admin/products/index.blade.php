@@ -79,7 +79,7 @@
                     <tbody>
                         @forelse($products as $product)
                             <tr>
-                                <td class="text-muted small">{{ $product->id }}</td>
+                                <td class="text-muted small">{{ $loop->iteration }}</td>
                                 <td>
                                     <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="admin-thumb">
                                 </td>

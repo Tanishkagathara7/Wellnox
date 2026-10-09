@@ -239,7 +239,7 @@
                 </div>
             @endif
 
-            @if ($errors->any())
+            @if (isset($errors) && $errors->any())
                 <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm mb-4" role="alert">
                     <div class="fw-bold mb-1"><i class="bi bi-exclamation-octagon me-1"></i> Please check the form errors below:</div>
                     <ul class="mb-0 small ps-3">

@@ -69,7 +69,7 @@
                     <tbody>
                         @forelse($categories as $category)
                             <tr>
-                                <td class="text-muted small">{{ $category->id }}</td>
+                                <td class="text-muted small">{{ $loop->iteration }}</td>
                                 <td>
                                     @if($category->image)
                                         <img src="{{ Str::startsWith($category->image, ['http', 'assets/']) ? asset($category->image) : asset('storage/' . $category->image) }}" 
