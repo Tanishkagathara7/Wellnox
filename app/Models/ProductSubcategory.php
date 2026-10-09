@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
+use MongoDB\Laravel\Eloquent\Model;
 
 class ProductSubcategory extends Model
 {
@@ -25,7 +25,6 @@ class ProductSubcategory extends Model
     ];
 
     protected $casts = [
-        'category_id' => 'integer',
         'status' => 'boolean',
         'sort_order' => 'integer',
     ];
@@ -47,6 +46,14 @@ class ProductSubcategory extends Model
     }
 
     /**
+     * Get product count for MongoDB compatibility.
+     */
+    public function getProductsCountAttribute(): int
+    {
+        return Product::where('subcategory_id', $this->_id ?? $this->id)->count();
+    }
+
+    /**
      * Active scope.
      */
     public function scopeActive($query)
@@ -59,7 +66,7 @@ class ProductSubcategory extends Model
      */
     public function scopeSorted($query)
     {
-        return $query->orderBy('sort_order', 'asc')->orderBy('id', 'asc');
+        return $query->orderBy('sort_order', 'asc')->orderBy('_id', 'asc');
     }
 
     /**
@@ -75,7 +82,7 @@ class ProductSubcategory extends Model
             return asset($this->image);
         }
 
-        return asset('storage/' . $this->image);
+        return asset('storage/'.$this->image);
     }
 
     /**
@@ -91,7 +98,7 @@ class ProductSubcategory extends Model
                 $slug = $baseSlug;
                 $counter = 1;
                 while (static::where('slug', $slug)->exists()) {
-                    $slug = $baseSlug . '-' . $counter++;
+                    $slug = $baseSlug.'-'.$counter++;
                 }
                 $subcategory->slug = $slug;
             }

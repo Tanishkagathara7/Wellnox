@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use MongoDB\Laravel\Eloquent\Model;
 
 class Contact extends Model
 {
@@ -30,9 +30,10 @@ class Contact extends Model
      */
     public function scopeStatus($query, $status)
     {
-        if (!empty($status)) {
+        if (! empty($status)) {
             return $query->where('status', $status);
         }
+
         return $query;
     }
 
@@ -41,15 +42,16 @@ class Contact extends Model
      */
     public function scopeSearch($query, $term)
     {
-        if (!empty($term)) {
+        if (! empty($term)) {
             return $query->where(function ($q) use ($term) {
                 $q->where('name', 'like', "%{$term}%")
-                  ->orWhere('email', 'like', "%{$term}%")
-                  ->orWhere('phone', 'like', "%{$term}%")
-                  ->orWhere('subject', 'like', "%{$term}%")
-                  ->orWhere('message', 'like', "%{$term}%");
+                    ->orWhere('email', 'like', "%{$term}%")
+                    ->orWhere('phone', 'like', "%{$term}%")
+                    ->orWhere('subject', 'like', "%{$term}%")
+                    ->orWhere('message', 'like', "%{$term}%");
             });
         }
+
         return $query;
     }
 }

@@ -33,7 +33,7 @@
                                         @php
                                             $panelCategories = isset($navCategories) && $navCategories->isNotEmpty() 
                                                 ? $navCategories 
-                                                : \App\Models\ProductCategory::active()->sorted()->withCount(['products' => function($q) { $q->active(); }])->get();
+                                                : \App\Models\ProductCategory::active()->sorted()->get();
                                         @endphp
 
                                         @foreach($panelCategories as $index => $cat)

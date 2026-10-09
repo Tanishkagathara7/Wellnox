@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\ProductCategory;
-use App\Models\ProductSubcategory;
 use App\Http\Requests\Admin\StoreProductSubcategoryRequest;
 use App\Http\Requests\Admin\UpdateProductSubcategoryRequest;
+use App\Models\ProductCategory;
+use App\Models\ProductSubcategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -18,14 +18,14 @@ class ProductSubcategoryController extends Controller
      */
     public function index(Request $request)
     {
-        $query = ProductSubcategory::with(['category'])->withCount('products');
+        $query = ProductSubcategory::with(['category']);
 
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%")
-                  ->orWhere('slug', 'like', "%{$search}%");
+                    ->orWhere('description', 'like', "%{$search}%")
+                    ->orWhere('slug', 'like', "%{$search}%");
             });
         }
 
@@ -54,6 +54,7 @@ class ProductSubcategoryController extends Controller
     {
         $categories = ProductCategory::orderBy('sort_order')->orderBy('name')->get();
         $selectedCategoryId = $request->query('category_id');
+
         return view('admin.subcategories.create', compact('categories', 'selectedCategoryId'));
     }
 
@@ -69,7 +70,7 @@ class ProductSubcategoryController extends Controller
             $slug = $baseSlug;
             $c = 1;
             while (ProductSubcategory::where('slug', $slug)->exists()) {
-                $slug = $baseSlug . '-' . $c++;
+                $slug = $baseSlug.'-'.$c++;
             }
             $validated['slug'] = $slug;
         }
@@ -91,6 +92,7 @@ class ProductSubcategoryController extends Controller
     public function edit(ProductSubcategory $subcategory)
     {
         $categories = ProductCategory::orderBy('sort_order')->orderBy('name')->get();
+
         return view('admin.subcategories.edit', compact('subcategory', 'categories'));
     }
 
@@ -106,7 +108,7 @@ class ProductSubcategoryController extends Controller
             $slug = $baseSlug;
             $c = 1;
             while (ProductSubcategory::where('slug', $slug)->where('id', '!=', $subcategory->id)->exists()) {
-                $slug = $baseSlug . '-' . $c++;
+                $slug = $baseSlug.'-'.$c++;
             }
             $validated['slug'] = $slug;
         }
@@ -145,8 +147,8 @@ class ProductSubcategoryController extends Controller
      */
     public function toggleStatus(ProductSubcategory $subcategory)
     {
-        $subcategory->update(['status' => !$subcategory->status]);
+        $subcategory->update(['status' => ! $subcategory->status]);
 
-        return back()->with('success', 'Subcategory status updated to ' . ($subcategory->status ? 'Active' : 'Inactive') . '.');
+        return back()->with('success', 'Subcategory status updated to '.($subcategory->status ? 'Active' : 'Inactive').'.');
     }
 }

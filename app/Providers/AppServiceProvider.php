@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\ProductCategory;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,14 +22,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        \Illuminate\Support\Facades\View::composer(['components.navbar', 'layouts.app'], function ($view) {
+        View::composer(['components.navbar', 'layouts.app'], function ($view) {
             try {
-                if (\Illuminate\Support\Facades\Schema::hasTable('product_categories')) {
-                    $navCategories = \App\Models\ProductCategory::active()
+                if (Schema::hasTable('product_categories')) {
+                    $navCategories = ProductCategory::active()
                         ->sorted()
-                        ->withCount(['products' => function ($q) {
-                            $q->active();
-                        }])
                         ->get();
                     $view->with('navCategories', $navCategories);
                 }

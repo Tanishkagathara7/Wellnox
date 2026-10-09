@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\ProductCategory;
 use App\Http\Requests\Admin\StoreProductCategoryRequest;
 use App\Http\Requests\Admin\UpdateProductCategoryRequest;
+use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -17,14 +17,14 @@ class ProductCategoryController extends Controller
      */
     public function index(Request $request)
     {
-        $query = ProductCategory::withCount('products');
+        $query = ProductCategory::query();
 
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%")
-                  ->orWhere('slug', 'like', "%{$search}%");
+                    ->orWhere('description', 'like', "%{$search}%")
+                    ->orWhere('slug', 'like', "%{$search}%");
             });
         }
 
@@ -124,8 +124,8 @@ class ProductCategoryController extends Controller
      */
     public function toggleStatus(ProductCategory $category)
     {
-        $category->update(['status' => !$category->status]);
+        $category->update(['status' => ! $category->status]);
 
-        return back()->with('success', 'Category status updated to ' . ($category->status ? 'Active' : 'Inactive') . '.');
+        return back()->with('success', 'Category status updated to '.($category->status ? 'Active' : 'Inactive').'.');
     }
 }

@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
+use MongoDB\Laravel\Eloquent\Model;
 
 class Product extends Model
 {
@@ -29,8 +29,6 @@ class Product extends Model
     ];
 
     protected $casts = [
-        'category_id' => 'integer',
-        'subcategory_id' => 'integer',
         'gallery_images' => 'array',
         'status' => 'boolean',
         'sort_order' => 'integer',
@@ -81,7 +79,7 @@ class Product extends Model
             return asset($this->image);
         }
 
-        return asset('storage/' . $this->image);
+        return asset('storage/'.$this->image);
     }
 
     /**
@@ -93,13 +91,13 @@ class Product extends Model
     {
         $urls = [$this->image_url];
 
-        if (!empty($this->gallery_images) && is_array($this->gallery_images)) {
+        if (! empty($this->gallery_images) && is_array($this->gallery_images)) {
             foreach ($this->gallery_images as $img) {
-                if (!empty($img)) {
+                if (! empty($img)) {
                     if (Str::startsWith($img, ['http://', 'https://', 'assets/'])) {
                         $urls[] = asset($img);
                     } else {
-                        $urls[] = asset('storage/' . $img);
+                        $urls[] = asset('storage/'.$img);
                     }
                 }
             }
@@ -121,7 +119,7 @@ class Product extends Model
                 $slug = $baseSlug;
                 $counter = 1;
                 while (static::where('slug', $slug)->exists()) {
-                    $slug = $baseSlug . '-' . $counter++;
+                    $slug = $baseSlug.'-'.$counter++;
                 }
                 $product->slug = $slug;
             }
