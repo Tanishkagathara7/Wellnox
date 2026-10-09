@@ -81,16 +81,26 @@ class ProductController extends Controller
         }
 
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('products', 'public');
-            $validated['image'] = $path;
+            try {
+                $path = $request->file('image')->store('products', 'public');
+                $validated['image'] = $path;
+            } catch (\Throwable $e) {
+                // If storage filesystem is read-only (serverless), continue without crashing
+            }
         }
 
         if ($request->hasFile('gallery_images')) {
             $galleryPaths = [];
             foreach ($request->file('gallery_images') as $file) {
-                $galleryPaths[] = $file->store('products/gallery', 'public');
+                try {
+                    $galleryPaths[] = $file->store('products/gallery', 'public');
+                } catch (\Throwable $e) {
+                    // If storage filesystem is read-only, continue without crashing
+                }
             }
-            $validated['gallery_images'] = $galleryPaths;
+            if (! empty($galleryPaths)) {
+                $validated['gallery_images'] = $galleryPaths;
+            }
         }
 
         Product::create($validated);
@@ -137,12 +147,15 @@ class ProductController extends Controller
         }
 
         if ($request->hasFile('image')) {
-            // Delete old file from storage if exists
-            if ($product->image && Storage::disk('public')->exists($product->image)) {
-                Storage::disk('public')->delete($product->image);
+            try {
+                if ($product->image && Storage::disk('public')->exists($product->image)) {
+                    Storage::disk('public')->delete($product->image);
+                }
+                $path = $request->file('image')->store('products', 'public');
+                $validated['image'] = $path;
+            } catch (\Throwable $e) {
+                // If storage filesystem is read-only, continue without crashing
             }
-            $path = $request->file('image')->store('products', 'public');
-            $validated['image'] = $path;
         }
 
         // Handle existing gallery and removals/additions
@@ -150,8 +163,12 @@ class ProductController extends Controller
 
         if (! empty($validated['remove_gallery_images']) && is_array($validated['remove_gallery_images'])) {
             foreach ($validated['remove_gallery_images'] as $imgToRemove) {
-                if (Storage::disk('public')->exists($imgToRemove)) {
-                    Storage::disk('public')->delete($imgToRemove);
+                try {
+                    if (Storage::disk('public')->exists($imgToRemove)) {
+                        Storage::disk('public')->delete($imgToRemove);
+                    }
+                } catch (\Throwable $e) {
+                    // Ignore storage delete errors
                 }
                 $existingGallery = array_values(array_filter($existingGallery, fn ($item) => $item !== $imgToRemove));
             }
@@ -159,7 +176,11 @@ class ProductController extends Controller
 
         if ($request->hasFile('gallery_images')) {
             foreach ($request->file('gallery_images') as $file) {
-                $existingGallery[] = $file->store('products/gallery', 'public');
+                try {
+                    $existingGallery[] = $file->store('products/gallery', 'public');
+                } catch (\Throwable $e) {
+                    // Ignore storage store errors
+                }
             }
         }
 
